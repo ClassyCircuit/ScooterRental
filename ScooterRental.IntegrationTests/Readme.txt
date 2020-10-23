@@ -1,0 +1,1 @@
+﻿IntegrationTests demonstrate how the application works with the actual interface implementations, not stubbed ones.
