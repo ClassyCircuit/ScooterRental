@@ -1,4 +1,4 @@
-﻿namespace ScooterRental.Core.Interfaces
+﻿namespace ScooterRental.Core.Interfaces.Services
 {
     public interface IRentalCompany
     {
@@ -24,7 +24,7 @@
         decimal EndRent(string id);
         // TODO: Ask question - where to report income if rent is spread over two months or two years. 31.12 - 01.01. And 31.10 - 05.11.
         // TODO: Ask question - what if the person rents the scooter for less than 1 minute? Should they be charged?
-        
+
         /// <summary>
         /// Income report.
         /// </summary>

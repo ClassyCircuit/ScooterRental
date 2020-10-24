@@ -1,7 +1,9 @@
-﻿namespace ScooterRental.Core.Interfaces.Validators
+﻿using ScooterRental.Core.Entities;
+
+namespace ScooterRental.Core.Interfaces.Validators
 {
     public interface IStartRentValidator
     {
-        void Validate(string id);
+        Scooter Validate(string id);
     }
 }

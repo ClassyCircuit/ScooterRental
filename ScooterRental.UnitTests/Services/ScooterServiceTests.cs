@@ -36,7 +36,7 @@ namespace ScooterRental.UnitTests.Services
         {
             // Arrange
             ScooterService service = new ScooterService(Context.Scooters);
-            
+
             // Act
             Scooter result = service.GetScooterById("");
 
@@ -62,7 +62,7 @@ namespace ScooterRental.UnitTests.Services
             // Arrange
             ScooterService service = new ScooterService(Context.Scooters);
             int scooterCountBefore = Context.Scooters.Count;
-            
+
             // Act
             service.RemoveScooter(Context.ExistingScooterId);
 
@@ -82,6 +82,29 @@ namespace ScooterRental.UnitTests.Services
 
             // Assert
             Context.Scooters.Count.ShouldBe(scooterCountBefore);
+        }
+
+        [Fact]
+        public void UpdateScooter_ExistingScooterValuesChanged()
+        {
+            // Arrange
+            var scooter = Context.Scooters[0];
+            scooter.IsRented = false;
+
+            ScooterService service = new ScooterService(Context.Scooters);
+
+            var updated = ScooterBuilder
+                .Default()
+                .WithId(scooter.Id)
+                .WithPricePerMinute(scooter.PricePerMinute)
+                .WithIsRented(true)
+                .Build();
+
+            // Act
+            service.UpdateScooter(updated);
+
+            // Assert
+            Context.Scooters[0].IsRented.ShouldBe(true);
         }
     }
 }

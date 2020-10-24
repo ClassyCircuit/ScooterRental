@@ -1,4 +1,5 @@
-﻿using ScooterRental.Core.Interfaces.Usecases;
+﻿using ScooterRental.Core.Entities;
+using ScooterRental.Core.Interfaces.Usecases;
 using ScooterRental.Core.Interfaces.Validators;
 
 namespace ScooterRental.Core.Usecases.StartRent
@@ -12,13 +13,15 @@ namespace ScooterRental.Core.Usecases.StartRent
             this.getScooterByIdHandler = getScooterByIdHandler;
         }
 
-        public void Validate(string id)
+        public Scooter Validate(string id)
         {
             var scooter = getScooterByIdHandler.Handle(id);
             if (scooter.IsRented)
             {
                 throw new ScooterIsAlreadyBeingRentedException($"Scooter with ID: {id} is already being rented, so a new rent cannot start at this time.");
             }
+
+            return scooter;
         }
     }
 }

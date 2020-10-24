@@ -8,6 +8,8 @@ namespace ScooterRental.Infrastructure
 {
     public class ScooterService : IScooterService
     {
+        // TODO: Make the same approach as rental company - expose this interface to user and call handlers from it.
+
         private readonly IList<Scooter> scooters;
 
         public ScooterService(IList<Scooter> scooters)
@@ -33,6 +35,12 @@ namespace ScooterRental.Infrastructure
         public void RemoveScooter(string id)
         {
             scooters.Remove(scooters.FirstOrDefault(x => x.Id == id));
+        }
+
+        public void UpdateScooter(Scooter scooter)
+        {
+            var existingScooter = scooters.FirstOrDefault(x=>x.Id == scooter.Id);
+            existingScooter.IsRented = scooter.IsRented;
         }
     }
 }
