@@ -2,31 +2,37 @@
 using ScooterRental.Core.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ScooterRental.Infrastructure
 {
     public class ScooterService : IScooterService
     {
-        private IList<Scooter> Scooters = new List<Scooter>();
+        private readonly IList<Scooter> scooters;
+
+        public ScooterService(IList<Scooter> scooters)
+        {
+            this.scooters = scooters;
+        }
 
         public void AddScooter(string id, decimal pricePerMinute)
         {
-            throw new NotImplementedException();
+            scooters.Add(new Scooter(id, pricePerMinute));
         }
 
         public Scooter GetScooterById(string scooterId)
         {
-            throw new NotImplementedException();
+            return scooters.FirstOrDefault(x => x.Id == scooterId);
         }
 
         public IList<Scooter> GetScooters()
         {
-            return Scooters;
+            return scooters;
         }
 
         public void RemoveScooter(string id)
         {
-            throw new NotImplementedException();
+            scooters.Remove(scooters.FirstOrDefault(x => x.Id == id));
         }
     }
 }

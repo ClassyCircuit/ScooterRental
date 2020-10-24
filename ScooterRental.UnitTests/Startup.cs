@@ -17,6 +17,7 @@ namespace ScooterRental.UnitTests
         {
             services.AddScoped<Scooter, Scooter>();
             services.AddTransient<Context, Context>();
+            services.AddScoped<IList<Scooter>, List<Scooter>>();
         }
     }
 }

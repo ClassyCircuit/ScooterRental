@@ -8,11 +8,11 @@ using Xunit;
 
 namespace ScooterRental.UnitTests
 {
-    public class GetScooters
+    public class GetScootersTests
     {
         private readonly Context context;
 
-        public GetScooters(Context context)
+        public GetScootersTests(Context context)
         {
             this.context = context;
         }

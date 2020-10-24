@@ -5,11 +5,11 @@ using Xunit;
 
 namespace ScooterRental.UnitTests
 {
-    public class AddScooters
+    public class AddScootersTests
     {
         private readonly Context context;
 
-        public AddScooters(Context context)
+        public AddScootersTests(Context context)
         {
             this.context = context;
         }
