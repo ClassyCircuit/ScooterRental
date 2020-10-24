@@ -1,37 +1,61 @@
-﻿using ScooterRental.Core.Exceptions;
+﻿using Moq;
+using ScooterRental.Core.Entities;
+using ScooterRental.Core.Exceptions;
 using ScooterRental.Core.Usecases.AddScooter;
+using ScooterRental.UnitTests.Setup;
+using Shouldly;
 using System;
 using Xunit;
 
-namespace ScooterRental.UnitTests
+namespace ScooterRental.UnitTests.Usecases
 {
-    public class AddScootersTests
+    public class AddScootersTests : TestBase
     {
-        private readonly Context context;
+        private Mock<AddScooterValidator> AddScooterValidator;
 
-        public AddScootersTests(Context context)
+        public AddScootersTests(Context context) : base(context)
         {
-            this.context = context;
+            AddScooterValidator = new Mock<AddScooterValidator>(Context.ScooterService.Object);
         }
 
         [Fact]
         public void AddScooterValidator_NotUniqueId_ThrowsException()
         {
-            AddScooterValidator validator = new AddScooterValidator(context.ScooterService.Object);
+            AddScooterValidator validator = new AddScooterValidator(Context.ScooterService.Object);
 
-            Action act = () => validator.Validate(context.ExistingScooterId);
+            Action act = () => validator.Validate(Context.ExistingScooterId);
 
-            Assert.Throws<IdNotUniqueException>(act);
+            Should.Throw<IdNotUniqueException>(act);
+        }
+
+        [Fact]
+        public void AddScooterValidator_InvalidId_ThrowsException()
+        {
+            AddScooterValidator validator = new AddScooterValidator(Context.ScooterService.Object);
+
+            Action act = () => validator.Validate("");
+
+            Should.Throw<IdCannotBeEmptyException>(act);
         }
 
         [Fact]
         public void AddScooterValidator_NegativePrice_ThrowsException()
         {
-            AddScooterValidator validator = new AddScooterValidator(context.ScooterService.Object);
+            AddScooterValidator validator = new AddScooterValidator(Context.ScooterService.Object);
 
             Action act = () => validator.Validate(-5m);
 
-            Assert.Throws<PriceCannotBeNegativeException>(act);
+            Should.Throw<PriceCannotBeNegativeException>(act);
+        }
+
+        [Fact]
+        public void AddScooter_AddsNewScooter()
+        {
+            Context.ScooterService.Setup(x => x.GetScooterById("1")).Returns((Scooter)null);
+
+            AddScooterHandler handler = new AddScooterHandler(Context.ScooterService.Object, AddScooterValidator.Object);
+
+            handler.Handle("1", 4m);
         }
     }
 }

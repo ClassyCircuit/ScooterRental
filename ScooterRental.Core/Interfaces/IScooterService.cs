@@ -25,7 +25,6 @@ namespace ScooterRental.Core.Interfaces
         /// List of scooters that belong to the company.
         /// </summary>
         /// <returns>Return a list of available scooters.</returns>
-        //Task<IList<Scooter>> GetScooters();
         IList<Scooter> GetScooters();
 
         /// <summary>

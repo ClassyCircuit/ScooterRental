@@ -2,10 +2,12 @@
 using ScooterRental.Core.Entities;
 using ScooterRental.Core.Interfaces;
 using ScooterRental.Core.Usecases.AddScooter;
+using ScooterRental.Core.Usecases.GetScooterById;
+using ScooterRental.Core.Usecases.RemoveScooter;
 using ScooterRental.UnitTests.Builders;
 using System.Collections.Generic;
 
-namespace ScooterRental.UnitTests
+namespace ScooterRental.UnitTests.Setup
 {
     /// <summary>
     /// Holds re-usable mock objects for setting up unit tests.
@@ -13,14 +15,14 @@ namespace ScooterRental.UnitTests
     public class Context
     {
         public Mock<IScooterService> ScooterService { get; }
-        public Mock<AddScooterValidator> AddScooterValidator { get; }
-        public IList<Scooter> scooters { get; }
-
+        public IList<Scooter> Scooters { get; }
         public string ExistingScooterId { get; }
+        public Mock<RemoveScooterValidator> RemoveScooterValidator { get; internal set; }
+        public Mock<GetScooterByIdValidator> GetScooterByIdValidator { get; internal set; }
 
         public Context()
         {
-            scooters = new List<Scooter>()
+            Scooters = new List<Scooter>()
             {
                 ScooterBuilder.Default().Build(),
                 ScooterBuilder.Default().Build(),
@@ -29,11 +31,15 @@ namespace ScooterRental.UnitTests
                 ScooterBuilder.Default().Build(),
             };
 
-            ExistingScooterId = scooters[0].Id;
+            ExistingScooterId = Scooters[0].Id;
 
             ScooterService = new Mock<IScooterService>();
-            ScooterService.Setup(x => x.GetScooters()).Returns(scooters);
-            ScooterService.Setup(x => x.GetScooterById(ExistingScooterId)).Returns(scooters[0]);
+            ScooterService.Setup(x => x.GetScooters()).Returns(Scooters);
+            ScooterService.Setup(x => x.GetScooterById(ExistingScooterId)).Returns(Scooters[0]);
+
+            GetScooterByIdValidator = new Mock<GetScooterByIdValidator>();
+
+            RemoveScooterValidator = new Mock<RemoveScooterValidator>(ScooterService.Object);
 
         }
     }

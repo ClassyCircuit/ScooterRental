@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace ScooterRental.Core.Exceptions
 {
     [Serializable]
-    internal class IdCannotBeEmptyException : Exception
+    public class IdCannotBeEmptyException : Exception
     {
         public IdCannotBeEmptyException()
         {

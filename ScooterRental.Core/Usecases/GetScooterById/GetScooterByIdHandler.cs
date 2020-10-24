@@ -1,6 +1,5 @@
 ﻿using ScooterRental.Core.Entities;
 using ScooterRental.Core.Interfaces;
-using System.Collections.Generic;
 
 namespace ScooterRental.Core.Usecases.GetScooterById
 {

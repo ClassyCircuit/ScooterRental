@@ -2,7 +2,7 @@
 using ScooterRental.Core.Interfaces;
 using System.Collections.Generic;
 
-namespace ScooterRental.Core.Usecases
+namespace ScooterRental.Core.Usecases.GetScooters
 {
     public class GetScootersHandler
     {

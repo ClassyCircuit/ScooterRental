@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ScooterRental.Core.Exceptions;
+using System;
 
 namespace ScooterRental.Core.Usecases.GetScooterById
 {
@@ -6,7 +7,10 @@ namespace ScooterRental.Core.Usecases.GetScooterById
     {
         public void Validate(string id)
         {
-            //if(id == "")
+            if (id == "")
+            {
+                throw new IdCannotBeEmptyException("Scooter ID must have a value");
+            }
         }
     }
 }

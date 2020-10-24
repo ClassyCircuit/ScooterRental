@@ -1,27 +1,25 @@
 ﻿using ScooterRental.Core.Entities;
 using ScooterRental.Infrastructure;
 using ScooterRental.UnitTests.Builders;
+using ScooterRental.UnitTests.Setup;
 using Shouldly;
 using System.Collections.Generic;
 using Xunit;
 
 namespace ScooterRental.UnitTests.Services
 {
-    public class ScooterServiceTests
+    public class ScooterServiceTests : TestBase
     {
-        private readonly Context context;
-
-        public ScooterServiceTests(Context context)
+        public ScooterServiceTests(Context context) : base(context)
         {
-            this.context = context;
         }
 
         [Fact]
         public void AddScooter_AddsNewObjectToList()
         {
             // Arrange          
-            ScooterService service = new ScooterService(context.scooters);
-            int scooterCountBefore = context.scooters.Count;
+            ScooterService service = new ScooterService(Context.Scooters);
+            int scooterCountBefore = Context.Scooters.Count;
 
             string scooterId = GetRandom.UniqueId();
             decimal price = GetRandom.Decimal(0, 10);
@@ -30,14 +28,14 @@ namespace ScooterRental.UnitTests.Services
             service.AddScooter(scooterId, price);
 
             // Assert
-            context.scooters.Count.ShouldBe(scooterCountBefore + 1);
+            Context.Scooters.Count.ShouldBe(scooterCountBefore + 1);
         }
 
         [Fact]
         public void GetScooterById_InvalidId_ReturnsNull()
         {
             // Arrange
-            ScooterService service = new ScooterService(context.scooters);
+            ScooterService service = new ScooterService(Context.Scooters);
             
             // Act
             Scooter result = service.GetScooterById("");
@@ -49,7 +47,7 @@ namespace ScooterRental.UnitTests.Services
         [Fact]
         public void GetScooters_ReturnsListOfScooters()
         {
-            ScooterService service = new ScooterService(context.scooters);
+            ScooterService service = new ScooterService(Context.Scooters);
 
             // Act
             IList<Scooter> scooters = service.GetScooters();
@@ -62,28 +60,28 @@ namespace ScooterRental.UnitTests.Services
         public void RemoveScooter_RemovesObjectFromList()
         {
             // Arrange
-            ScooterService service = new ScooterService(context.scooters);
-            int scooterCountBefore = context.scooters.Count;
+            ScooterService service = new ScooterService(Context.Scooters);
+            int scooterCountBefore = Context.Scooters.Count;
             
             // Act
-            service.RemoveScooter(context.ExistingScooterId);
+            service.RemoveScooter(Context.ExistingScooterId);
 
             // Assert
-            context.scooters.Count.ShouldBe(scooterCountBefore - 1);
+            Context.Scooters.Count.ShouldBe(scooterCountBefore - 1);
         }
 
         [Fact]
         public void RemoveScooter_InvalidId_DoesNotRemoveAnything()
         {
             // Arrange
-            ScooterService service = new ScooterService(context.scooters);
-            int scooterCountBefore = context.scooters.Count;
+            ScooterService service = new ScooterService(Context.Scooters);
+            int scooterCountBefore = Context.Scooters.Count;
 
             // Act
             service.RemoveScooter("");
 
             // Assert
-            context.scooters.Count.ShouldBe(scooterCountBefore);
+            Context.Scooters.Count.ShouldBe(scooterCountBefore);
         }
     }
 }
