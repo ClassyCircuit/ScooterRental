@@ -1,6 +1,6 @@
 ﻿using Moq;
 using ScooterRental.Core.Entities;
-using ScooterRental.Core.Interfaces;
+using ScooterRental.Core.Interfaces.Services;
 using ScooterRental.Core.Usecases.AddScooter;
 using ScooterRental.Core.Usecases.GetScooterById;
 using ScooterRental.Core.Usecases.RemoveScooter;
@@ -17,7 +17,6 @@ namespace ScooterRental.UnitTests.Setup
         public Mock<IScooterService> ScooterService { get; }
         public IList<Scooter> Scooters { get; }
         public string ExistingScooterId { get; }
-        public Mock<RemoveScooterValidator> RemoveScooterValidator { get; internal set; }
         public Mock<GetScooterByIdValidator> GetScooterByIdValidator { get; internal set; }
 
         public Context()
@@ -38,9 +37,6 @@ namespace ScooterRental.UnitTests.Setup
             ScooterService.Setup(x => x.GetScooterById(ExistingScooterId)).Returns(Scooters[0]);
 
             GetScooterByIdValidator = new Mock<GetScooterByIdValidator>();
-
-            RemoveScooterValidator = new Mock<RemoveScooterValidator>(ScooterService.Object);
-
         }
     }
 }

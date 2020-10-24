@@ -1,22 +1,21 @@
-﻿using ScooterRental.Core.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using ScooterRental.Core.Interfaces.Services;
+using ScooterRental.Core.Interfaces.Usecases;
+using ScooterRental.Core.Interfaces.Validators;
 
 namespace ScooterRental.Core.Usecases.RemoveScooter
 {
-    public class RemoveScooterHandler
+    public class RemoveScooterHandler : IRemoveScooterHandler
     {
         readonly IScooterService scooterService;
-        readonly RemoveScooterValidator validator;
+        readonly IRemoveScooterValidator validator;
 
-        public RemoveScooterHandler(IScooterService scooterService, RemoveScooterValidator validator)
+        public RemoveScooterHandler(IScooterService scooterService, IRemoveScooterValidator validator)
         {
             this.scooterService = scooterService;
             this.validator = validator;
         }
 
-        public void RemoveScooter(string id)
+        public void Handle(string id)
         {
             validator.Validate(id);
             scooterService.RemoveScooter(id);

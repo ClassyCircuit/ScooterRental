@@ -1,16 +1,18 @@
-﻿using ScooterRental.Core.Interfaces;
+﻿using ScooterRental.Core.Interfaces.Services;
+using ScooterRental.Core.Interfaces.Usecases;
+using ScooterRental.Core.Interfaces.Validators;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace ScooterRental.Core.Usecases.AddScooter
 {
-    public class AddScooterHandler
+    public class AddScooterHandler : IAddScooterHandler
     {
         IScooterService ScooterService;
-        AddScooterValidator AddScooterValidator;
+        IAddScooterValidator AddScooterValidator;
 
-        public AddScooterHandler(IScooterService scooterService, AddScooterValidator addScooterValidator)
+        public AddScooterHandler(IScooterService scooterService, IAddScooterValidator addScooterValidator)
         {
             ScooterService = scooterService;
             AddScooterValidator = addScooterValidator;

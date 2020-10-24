@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace ScooterRental.Core.Interfaces
+namespace ScooterRental.Core.Interfaces.Services
 {
     public interface IScooterService
     {
@@ -19,7 +19,6 @@ namespace ScooterRental.Core.Interfaces
         /// </summary>
         /// <param name="id">Unique ID of the scooter.</param>
         void RemoveScooter(string id);
-        // TODO: Business logic -> check if IsRented = true
 
         /// <summary>
         /// List of scooters that belong to the company.

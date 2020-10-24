@@ -1,29 +1,27 @@
-﻿using ScooterRental.Core.Interfaces;
-using System;
+﻿using System;
 using ScooterRental.Core.Exceptions;
+using ScooterRental.Core.Usecases.GetScooterById;
+using ScooterRental.Core.Interfaces.Usecases;
+using ScooterRental.Core.Interfaces.Validators;
 
 namespace ScooterRental.Core.Usecases.AddScooter
 {
-    public class AddScooterValidator
+    public class AddScooterValidator : IAddScooterValidator
     {
-        IScooterService ScooterService;
+        readonly IGetScooterByIdHandler getScooterByIdHandler;
 
-        public AddScooterValidator(IScooterService scooterService)
+        public AddScooterValidator(IGetScooterByIdHandler getScooterByIdHandler)
         {
-            ScooterService = scooterService;
+            this.getScooterByIdHandler = getScooterByIdHandler;
         }
 
         public void Validate(string id)
         {
-            var result = ScooterService.GetScooterById(id);
+            var result = getScooterByIdHandler.Handle(id);
+
             if (result != null)
             {
                 throw new IdNotUniqueException("Scooter ID already exists.");
-            }
-
-            if(id == "")
-            {
-                throw new IdCannotBeEmptyException("Scooter ID must have a value");
             }
         }
 

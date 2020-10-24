@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using ScooterRental.Core.Interfaces;
+using ScooterRental.Core.Interfaces.Services;
 using ScooterRental.Infrastructure;
 
 namespace ScooterRental.IntegrationTests

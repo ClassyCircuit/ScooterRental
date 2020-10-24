@@ -1,7 +1,10 @@
 ﻿using Moq;
 using ScooterRental.Core.Entities;
 using ScooterRental.Core.Exceptions;
+using ScooterRental.Core.Interfaces.Usecases;
+using ScooterRental.Core.Interfaces.Validators;
 using ScooterRental.Core.Usecases.AddScooter;
+using ScooterRental.Core.Usecases.GetScooterById;
 using ScooterRental.UnitTests.Setup;
 using Shouldly;
 using System;
@@ -11,17 +14,20 @@ namespace ScooterRental.UnitTests.Usecases
 {
     public class AddScootersTests : TestBase
     {
-        private Mock<AddScooterValidator> AddScooterValidator;
+        private Mock<IAddScooterValidator> AddScooterValidator;
 
         public AddScootersTests(Context context) : base(context)
         {
-            AddScooterValidator = new Mock<AddScooterValidator>(Context.ScooterService.Object);
+            AddScooterValidator = new Mock<IAddScooterValidator>();
         }
 
         [Fact]
         public void AddScooterValidator_NotUniqueId_ThrowsException()
         {
-            AddScooterValidator validator = new AddScooterValidator(Context.ScooterService.Object);
+            var getScooterByIdHandler = new Mock<IGetScooterByIdHandler>();
+            getScooterByIdHandler.Setup(x=>x.Handle(Context.ExistingScooterId)).Returns(Context.Scooters[0]);
+
+            AddScooterValidator validator = new AddScooterValidator(getScooterByIdHandler.Object);
 
             Action act = () => validator.Validate(Context.ExistingScooterId);
 
@@ -29,19 +35,9 @@ namespace ScooterRental.UnitTests.Usecases
         }
 
         [Fact]
-        public void AddScooterValidator_InvalidId_ThrowsException()
-        {
-            AddScooterValidator validator = new AddScooterValidator(Context.ScooterService.Object);
-
-            Action act = () => validator.Validate("");
-
-            Should.Throw<IdCannotBeEmptyException>(act);
-        }
-
-        [Fact]
         public void AddScooterValidator_NegativePrice_ThrowsException()
         {
-            AddScooterValidator validator = new AddScooterValidator(Context.ScooterService.Object);
+            AddScooterValidator validator = new AddScooterValidator(new Mock<IGetScooterByIdHandler>().Object);
 
             Action act = () => validator.Validate(-5m);
 

@@ -8,8 +8,4 @@
     <ProjectReference Include="..\ScooterRental.Core\ScooterRental.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Data\" />
-  </ItemGroup>
-
 </Project>

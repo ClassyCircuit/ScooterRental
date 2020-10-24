@@ -1,26 +1,21 @@
 ﻿using ScooterRental.Core.Exceptions;
-using ScooterRental.Core.Interfaces;
-using System;
+using ScooterRental.Core.Interfaces.Usecases;
+using ScooterRental.Core.Interfaces.Validators;
 
 namespace ScooterRental.Core.Usecases.RemoveScooter
 {
-    public class RemoveScooterValidator
+    public class RemoveScooterValidator : IRemoveScooterValidator
     {
-        readonly IScooterService scooterService;
+        readonly IGetScooterByIdHandler getScooterByIdHandler;
 
-        public RemoveScooterValidator(IScooterService scooterService)
+        public RemoveScooterValidator(IGetScooterByIdHandler getScooterByIdHandler)
         {
-            this.scooterService = scooterService;
+            this.getScooterByIdHandler = getScooterByIdHandler;
         }
 
         public void Validate(string id)
         {
-            if (id == "")
-            {
-                throw new IdCannotBeEmptyException("Scooter ID must have a value");
-            }
-
-            var scooter = scooterService.GetScooterById(id);
+            var scooter = getScooterByIdHandler.Handle(id);
             if (scooter.IsRented)
             {
                 throw new RentedScooterCannotBeRemovedException($"Scooter with ID: {id} is currently rented, so it cannot be removed.");

@@ -1,14 +1,16 @@
 ﻿using ScooterRental.Core.Entities;
-using ScooterRental.Core.Interfaces;
+using ScooterRental.Core.Interfaces.Services;
+using ScooterRental.Core.Interfaces.Usecases;
+using ScooterRental.Core.Interfaces.Validators;
 
 namespace ScooterRental.Core.Usecases.GetScooterById
 {
-    public class GetScooterByIdHandler
+    public class GetScooterByIdHandler : IGetScooterByIdHandler
     {
         IScooterService scooterService;
-        GetScooterByIdValidator validator;
+        IGetScooterByIdValidator validator;
 
-        public GetScooterByIdHandler(IScooterService scooterService, GetScooterByIdValidator getScooterByIdValidator)
+        public GetScooterByIdHandler(IScooterService scooterService, IGetScooterByIdValidator getScooterByIdValidator)
         {
             this.scooterService = scooterService;
             validator = getScooterByIdValidator;

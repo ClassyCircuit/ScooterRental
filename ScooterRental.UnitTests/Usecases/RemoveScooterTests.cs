@@ -5,41 +5,59 @@ using Shouldly;
 using System.Linq;
 using Xunit;
 using System;
+using Moq;
+using ScooterRental.UnitTests.Builders;
+using ScooterRental.Core.Usecases.GetScooterById;
+using ScooterRental.Core.Interfaces.Services;
+using ScooterRental.Core.Interfaces.Validators;
+using ScooterRental.Core.Interfaces.Usecases;
 
 namespace ScooterRental.UnitTests.Usecases
 {
     public class RemoveScooterTests : TestBase
     {
+        public Mock<RemoveScooterValidator> RemoveScooterValidator;
+
         public RemoveScooterTests(Context context) : base(context)
         {
+            RemoveScooterValidator = new Mock<RemoveScooterValidator>(Context.ScooterService.Object);
         }
 
         [Fact]
         public void RemoveScooterValidator_IsRented_ThrowsException()
         {
             // Arrange
-            RemoveScooterValidator validator = new RemoveScooterValidator(Context.ScooterService.Object);
-            var scooter = Context.Scooters.First(x => x.Id == Context.ExistingScooterId);
-            scooter.IsRented = true;
+            var rentedScooter = ScooterBuilder.Default().WithIsRented(true).Build();
+
+            var getScooterByIdHandler = new Mock<IGetScooterByIdHandler>();
+            getScooterByIdHandler.Setup(x => x.Handle(rentedScooter.Id)).Returns(rentedScooter);
+
+            RemoveScooterValidator validator = new RemoveScooterValidator(getScooterByIdHandler.Object);
 
             // Act
-            Action act = () => validator.Validate(Context.ExistingScooterId);
+            Action act = () => validator.Validate(rentedScooter.Id);
 
             // Assert
             Should.Throw<RentedScooterCannotBeRemovedException>(act);
         }
 
         [Fact]
-        public void RemoveScooterValidator_InvalidId_ThrowsException()
+        public void RemoveScooter_RemovesScooter()
         {
-            // Arrange
-            RemoveScooterValidator validator = new RemoveScooterValidator(Context.ScooterService.Object);
+            string id = "1";
 
-            // Act
-            Action act = () => validator.Validate("");
+            var service = new Mock<IScooterService>();
+            service.Setup(x=>x.RemoveScooter(id)).Verifiable();
 
-            // Assert
-            Should.Throw<IdCannotBeEmptyException>(act);
+            var validator = new Mock<IRemoveScooterValidator>();
+            validator.Setup(x=>x.Validate(id)).Verifiable();
+
+            RemoveScooterHandler handler = new RemoveScooterHandler(service.Object, validator.Object);
+
+            handler.Handle(id);
+
+            validator.Verify();
+            service.Verify();
         }
     }
 }
