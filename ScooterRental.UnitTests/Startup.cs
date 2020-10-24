@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Moq;
+using ScooterRental.Core.Entities;
 using ScooterRental.Core.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -14,8 +15,8 @@ namespace ScooterRental.UnitTests
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddTransient<IScooterService, Mock<IScooterService>>();
-            services.AddTransient<MockObjects, MockObjects>();
+            services.AddScoped<Scooter, Scooter>();
+            services.AddTransient<Context, Context>();
         }
     }
 }

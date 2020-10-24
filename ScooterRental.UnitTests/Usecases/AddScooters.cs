@@ -7,9 +7,9 @@ namespace ScooterRental.UnitTests
 {
     public class AddScooters
     {
-        private readonly MockObjects context;
+        private readonly Context context;
 
-        public AddScooters(MockObjects context)
+        public AddScooters(Context context)
         {
             this.context = context;
         }
@@ -19,7 +19,7 @@ namespace ScooterRental.UnitTests
         {
             AddScooterValidator validator = new AddScooterValidator(context.ScooterService.Object);
 
-            Action act = () => validator.Validate("1");
+            Action act = () => validator.Validate(context.ExistingScooterId);
 
             Assert.Throws<IdNotUniqueException>(act);
         }

@@ -10,9 +10,9 @@ namespace ScooterRental.UnitTests
 {
     public class GetScooters
     {
-        private readonly MockObjects context;
+        private readonly Context context;
 
-        public GetScooters(MockObjects context)
+        public GetScooters(Context context)
         {
             this.context = context;
         }

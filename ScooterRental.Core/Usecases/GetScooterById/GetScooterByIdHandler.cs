@@ -12,7 +12,7 @@ namespace ScooterRental.Core.Usecases.GetScooterById
         public GetScooterByIdHandler(IScooterService scooterService, GetScooterByIdValidator getScooterByIdValidator)
         {
             this.scooterService = scooterService;
-            this.validator = getScooterByIdValidator;
+            validator = getScooterByIdValidator;
         }
 
         public Scooter Handle(string id)

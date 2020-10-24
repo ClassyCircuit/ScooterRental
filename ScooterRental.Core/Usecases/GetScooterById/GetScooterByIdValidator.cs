@@ -2,11 +2,11 @@
 
 namespace ScooterRental.Core.Usecases.GetScooterById
 {
-    internal class GetScooterByIdValidator
+    public class GetScooterByIdValidator
     {
         public void Validate(string id)
         {
-            if(id == "")
+            //if(id == "")
         }
     }
 }
