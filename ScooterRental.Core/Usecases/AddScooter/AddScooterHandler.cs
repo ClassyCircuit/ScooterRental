@@ -1,9 +1,6 @@
 ﻿using ScooterRental.Core.Interfaces.Services;
 using ScooterRental.Core.Interfaces.Usecases;
 using ScooterRental.Core.Interfaces.Validators;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace ScooterRental.Core.Usecases.AddScooter
 {

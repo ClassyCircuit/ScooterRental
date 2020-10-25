@@ -1,9 +1,7 @@
 ﻿using Moq;
 using ScooterRental.Core.Entities;
 using ScooterRental.Core.Interfaces.Services;
-using ScooterRental.Core.Usecases.AddScooter;
 using ScooterRental.Core.Usecases.GetScooterById;
-using ScooterRental.Core.Usecases.RemoveScooter;
 using ScooterRental.UnitTests.Builders;
 using System.Collections.Generic;
 

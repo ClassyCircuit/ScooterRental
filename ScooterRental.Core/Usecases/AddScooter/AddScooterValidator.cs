@@ -1,6 +1,4 @@
-﻿using System;
-using ScooterRental.Core.Exceptions;
-using ScooterRental.Core.Usecases.GetScooterById;
+﻿using ScooterRental.Core.Exceptions;
 using ScooterRental.Core.Interfaces.Usecases;
 using ScooterRental.Core.Interfaces.Validators;
 

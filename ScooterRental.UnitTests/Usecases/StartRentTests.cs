@@ -1,5 +1,4 @@
 ﻿using Moq;
-using ScooterRental.Core.Interfaces;
 using ScooterRental.Core.Interfaces.Services;
 using ScooterRental.Core.Interfaces.Usecases;
 using ScooterRental.Core.Interfaces.Validators;
@@ -8,10 +7,6 @@ using ScooterRental.UnitTests.Builders;
 using ScooterRental.UnitTests.Setup;
 using Shouldly;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace ScooterRental.UnitTests.Usecases

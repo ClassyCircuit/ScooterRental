@@ -1,11 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Moq;
 using ScooterRental.Core.Entities;
-using ScooterRental.Core.Interfaces;
 using ScooterRental.UnitTests.Setup;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace ScooterRental.UnitTests
 {

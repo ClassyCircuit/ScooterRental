@@ -2,12 +2,8 @@
 using ScooterRental.Core.Interfaces.Services;
 using ScooterRental.Core.Interfaces.Usecases;
 using ScooterRental.Core.Services;
-using ScooterRental.Core.Usecases.StartRent;
 using ScooterRental.UnitTests.Builders;
 using ScooterRental.UnitTests.Setup;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Xunit;
 
 namespace ScooterRental.UnitTests.Services

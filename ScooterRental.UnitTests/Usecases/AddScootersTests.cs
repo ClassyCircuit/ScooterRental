@@ -4,7 +4,6 @@ using ScooterRental.Core.Exceptions;
 using ScooterRental.Core.Interfaces.Usecases;
 using ScooterRental.Core.Interfaces.Validators;
 using ScooterRental.Core.Usecases.AddScooter;
-using ScooterRental.Core.Usecases.GetScooterById;
 using ScooterRental.UnitTests.Setup;
 using Shouldly;
 using System;

@@ -1,16 +1,14 @@
-﻿using ScooterRental.Core.Usecases.RemoveScooter;
+﻿using Moq;
 using ScooterRental.Core.Exceptions;
+using ScooterRental.Core.Interfaces.Services;
+using ScooterRental.Core.Interfaces.Usecases;
+using ScooterRental.Core.Interfaces.Validators;
+using ScooterRental.Core.Usecases.RemoveScooter;
+using ScooterRental.UnitTests.Builders;
 using ScooterRental.UnitTests.Setup;
 using Shouldly;
-using System.Linq;
-using Xunit;
 using System;
-using Moq;
-using ScooterRental.UnitTests.Builders;
-using ScooterRental.Core.Usecases.GetScooterById;
-using ScooterRental.Core.Interfaces.Services;
-using ScooterRental.Core.Interfaces.Validators;
-using ScooterRental.Core.Interfaces.Usecases;
+using Xunit;
 
 namespace ScooterRental.UnitTests.Usecases
 {

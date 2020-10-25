@@ -1,6 +1,5 @@
 ﻿using ScooterRental.Core.Entities;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace ScooterRental.Core.Interfaces.Services
 {
