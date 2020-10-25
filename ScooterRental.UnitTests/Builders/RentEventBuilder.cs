@@ -14,18 +14,19 @@ namespace rentEventRental.UnitTests.Builders
         private bool IsActive;
         private decimal TotalPrice;
         private string Id;
+        private Company company;
 
         public RentEvent Build()
         {
             if (rentEvent == null)
             {
-                rentEvent = new RentEvent(StartDate, EndDate, PricePerMinute, IsActive, TotalPrice, Id);
+                rentEvent = new RentEvent(StartDate, EndDate, PricePerMinute, IsActive, Id, company);
             }
 
             return rentEvent;
         }
 
-        public static RentEventBuilder Default()
+        public static RentEventBuilder Default(Company company)
         {
             return new RentEventBuilder()
                 .WithId(GetRandom.UniqueId())
@@ -33,7 +34,14 @@ namespace rentEventRental.UnitTests.Builders
                 .WithIsActive(true)
                 .WithStartDate(DateTime.Now)
                 .WithEndDate(null)
-                .WithTotalPrice(0m);
+                .WithTotalPrice(0m)
+                .WithCompany(company);
+        }
+
+        public RentEventBuilder WithCompany(Company value)
+        {
+            company = value;
+            return this;
         }
 
         public RentEventBuilder WithId(string value)

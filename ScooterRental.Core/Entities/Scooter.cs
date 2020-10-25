@@ -7,10 +7,11 @@
         /// </summary>
         /// <param name="id">ID of the scooter.</param>
         /// <param name="pricePerMinute">Rental price of the scooter per one minute.</param>
-        public Scooter(string id, decimal pricePerMinute)
+        public Scooter(string id, decimal pricePerMinute, Company company)
         {
             Id = id;
             PricePerMinute = pricePerMinute;
+            Company = company;
         }
 
         /// <summary>
@@ -29,5 +30,7 @@
         /// scooter.
         /// </summary>
         public bool IsRented { get; set; }
+
+        public Company Company { get; set; }
     }
 }

@@ -10,7 +10,7 @@ namespace ScooterRental.UnitTests.Services
 {
     public class RentalCompanyTests : TestBase
     {
-        public RentalCompanyTests(Context context) : base(context)
+        public RentalCompanyTests(Setup.Mocks context) : base(context)
         {
         }
 
@@ -20,10 +20,10 @@ namespace ScooterRental.UnitTests.Services
             string id = GetRandom.UniqueId();
 
             var handler = new Mock<IStartRentHandler>();
-            handler.Setup(x=>x.Handle(id)).Verifiable();
-            
-            IRentalCompany company = new RentalCompany(handler.Object);
-            
+            handler.Setup(x => x.Handle(id, Mocks.Company)).Verifiable();
+
+            IRentalCompany company = new RentalCompany(handler.Object, Mocks.Company, new Mock<IEndRentHandler>().Object, new Mock<ICalculateIncomeHandler>().Object);
+
             company.StartRent(id);
             handler.Verify();
         }

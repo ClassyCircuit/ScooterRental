@@ -2,6 +2,6 @@
 {
     public interface IRemoveScooterHandler
     {
-        void Handle(string id);
+        void Handle(string id, string companyId);
     }
 }

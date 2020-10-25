@@ -3,6 +3,6 @@
     public interface IAddScooterValidator
     {
         void Validate(decimal pricePerMinute);
-        void Validate(string id);
+        void Validate(string id, string companyId);
     }
 }

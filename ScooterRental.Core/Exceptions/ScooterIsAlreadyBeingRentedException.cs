@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace ScooterRental.Core.Usecases.StartRent
+namespace ScooterRental.Core.Exceptions
 {
     [Serializable]
     public class ScooterIsAlreadyBeingRentedException : Exception

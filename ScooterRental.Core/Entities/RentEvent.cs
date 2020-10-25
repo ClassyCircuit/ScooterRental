@@ -4,14 +4,14 @@ namespace ScooterRental.Core.Entities
 {
     public class RentEvent
     {
-        public RentEvent(DateTime startDate, DateTime? endDate, decimal pricePerMinute, bool isActive, decimal totalPrice, string id)
+        public RentEvent(DateTime startDate, DateTime? endDate, decimal pricePerMinute, bool isActive, string id, Company company)
         {
             StartDate = startDate;
             EndDate = endDate;
             PricePerMinute = pricePerMinute;
             IsActive = isActive;
-            TotalPrice = totalPrice;
             Id = id;
+            Company = company;
         }
 
         /// <summary>
@@ -43,5 +43,7 @@ namespace ScooterRental.Core.Entities
         /// Total price for the entire rent period.
         /// </summary>
         public decimal TotalPrice { get; set; }
+
+        public Company Company { get; set; }
     }
 }

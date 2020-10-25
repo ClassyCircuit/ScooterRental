@@ -3,7 +3,8 @@ using ScooterRental.Core.Entities;
 using ScooterRental.Core.Exceptions;
 using ScooterRental.Core.Interfaces.Usecases;
 using ScooterRental.Core.Interfaces.Validators;
-using ScooterRental.Core.Usecases.AddScooter;
+using ScooterRental.Core.Usecases;
+using ScooterRental.Core.Validators;
 using ScooterRental.UnitTests.Setup;
 using Shouldly;
 using System;
@@ -15,7 +16,7 @@ namespace ScooterRental.UnitTests.Usecases
     {
         private Mock<IAddScooterValidator> AddScooterValidator;
 
-        public AddScootersTests(Context context) : base(context)
+        public AddScootersTests(Setup.Mocks context) : base(context)
         {
             AddScooterValidator = new Mock<IAddScooterValidator>();
         }
@@ -24,11 +25,11 @@ namespace ScooterRental.UnitTests.Usecases
         public void AddScooterValidator_NotUniqueId_ThrowsException()
         {
             var getScooterByIdHandler = new Mock<IGetScooterByIdHandler>();
-            getScooterByIdHandler.Setup(x=>x.Handle(Context.ExistingScooterId)).Returns(Context.Scooters[0]);
+            getScooterByIdHandler.Setup(x => x.Handle(Mocks.ExistingScooterId, Mocks.Company.Id)).Returns(Mocks.Scooters[0]);
 
             AddScooterValidator validator = new AddScooterValidator(getScooterByIdHandler.Object);
 
-            Action act = () => validator.Validate(Context.ExistingScooterId);
+            Action act = () => validator.Validate(Mocks.ExistingScooterId, Mocks.Company.Id);
 
             Should.Throw<IdNotUniqueException>(act);
         }
@@ -46,11 +47,11 @@ namespace ScooterRental.UnitTests.Usecases
         [Fact]
         public void AddScooter_AddsNewScooter()
         {
-            Context.ScooterService.Setup(x => x.GetScooterById("1")).Returns((Scooter)null);
+            Mocks.CompanyRepository.Setup(x => x.GetScooterById(Mocks.Company.Id, "1")).Returns((Scooter)null);
 
-            AddScooterHandler handler = new AddScooterHandler(Context.ScooterService.Object, AddScooterValidator.Object);
+            AddScooterHandler handler = new AddScooterHandler(Mocks.CompanyRepository.Object, AddScooterValidator.Object);
 
-            handler.Handle("1", 4m);
+            handler.Handle("1", 4m, Mocks.Company.Id);
         }
     }
 }

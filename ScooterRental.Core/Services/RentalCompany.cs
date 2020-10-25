@@ -1,32 +1,39 @@
-﻿using ScooterRental.Core.Interfaces.Services;
+﻿using ScooterRental.Core.Entities;
+using ScooterRental.Core.Interfaces.Services;
 using ScooterRental.Core.Interfaces.Usecases;
-using System;
 
 namespace ScooterRental.Core.Services
 {
     public class RentalCompany : IRentalCompany
     {
-        readonly IStartRentHandler startRentHandler;
+        public Company Company { get; private set; }
 
-        public RentalCompany(IStartRentHandler startRentHandler)
+        readonly IStartRentHandler startRentHandler;
+        readonly IEndRentHandler endRentHandler;
+        readonly ICalculateIncomeHandler calculateIncomeHandler;
+
+        public RentalCompany(IStartRentHandler startRentHandler, Company company, IEndRentHandler endRentHandler, ICalculateIncomeHandler calculateIncomeHandler)
         {
             this.startRentHandler = startRentHandler;
+            Company = company;
+            this.endRentHandler = endRentHandler;
+            this.calculateIncomeHandler = calculateIncomeHandler;
         }
 
-        public string Name => throw new NotImplementedException();
+        public string Name => Company.Name;
 
         public void StartRent(string id)
         {
-            startRentHandler.Handle(id);
+            startRentHandler.Handle(id, Company);
         }
 
         public decimal EndRent(string id)
         {
-            throw new NotImplementedException();
+            return endRentHandler.Handle(id, Company.Id);
         }
         public decimal CalculateIncome(int? year, bool includeNotCompletedRentals)
         {
-            throw new NotImplementedException();
+            return calculateIncomeHandler.Handle(year, includeNotCompletedRentals, Company.Id);
         }
 
     }

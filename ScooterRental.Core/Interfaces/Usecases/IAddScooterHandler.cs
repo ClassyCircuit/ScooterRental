@@ -2,6 +2,6 @@
 {
     public interface IAddScooterHandler
     {
-        void Handle(string id, decimal pricePerMinute);
+        void Handle(string id, decimal pricePerMinute, string companyId);
     }
 }

@@ -1,7 +1,7 @@
 using ScooterRental.Core.Entities;
 using ScooterRental.Core.Exceptions;
-using ScooterRental.Core.Usecases.GetScooterById;
-using ScooterRental.Core.Usecases.GetScooters;
+using ScooterRental.Core.Usecases;
+using ScooterRental.Core.Validators;
 using ScooterRental.UnitTests.Setup;
 using Shouldly;
 using System;
@@ -12,7 +12,7 @@ namespace ScooterRental.UnitTests.Usecases
 {
     public class GetScootersTests : TestBase
     {
-        public GetScootersTests(Context context) : base(context)
+        public GetScootersTests(Mocks context) : base(context)
         {
         }
 
@@ -20,10 +20,10 @@ namespace ScooterRental.UnitTests.Usecases
         public void GetAllScooters_ReturnsListOfScooters()
         {
             // Arrange
-            GetScootersHandler handler = new GetScootersHandler(Context.ScooterService.Object);
+            GetScootersHandler handler = new GetScootersHandler(Mocks.CompanyRepository.Object);
 
             // Act
-            IList<Scooter> result = handler.Handle();
+            IList<Scooter> result = handler.Handle(Mocks.Company.Id);
 
             // Assert
             result.ShouldNotBeEmpty();
@@ -33,14 +33,14 @@ namespace ScooterRental.UnitTests.Usecases
         public void GetScooterById_ReturnsOneScooter()
         {
             // Arrange
-            GetScooterByIdHandler handler = new GetScooterByIdHandler(Context.ScooterService.Object, Context.GetScooterByIdValidator.Object);
+            GetScooterByIdHandler handler = new GetScooterByIdHandler(Mocks.CompanyRepository.Object, Mocks.GetScooterByIdValidator.Object);
 
             // Act
-            Scooter result = handler.Handle(Context.ExistingScooterId);
+            Scooter result = handler.Handle(Mocks.ExistingScooterId, Mocks.Company.Id);
 
             // Assert
             result.ShouldNotBeNull();
-            result.Id.ShouldBe(Context.ExistingScooterId);
+            result.Id.ShouldBe(Mocks.ExistingScooterId);
         }
 
         [Fact]

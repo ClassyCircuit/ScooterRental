@@ -2,11 +2,11 @@
 {
     public abstract class TestBase
     {
-        protected readonly Context Context;
+        protected readonly Mocks Mocks;
 
-        protected TestBase(Context context)
+        protected TestBase(Mocks mocks)
         {
-            Context = context;
+            Mocks = mocks;
         }
     }
 }

@@ -2,7 +2,7 @@
 using ScooterRental.Core.Interfaces.Usecases;
 using ScooterRental.Core.Interfaces.Validators;
 
-namespace ScooterRental.Core.Usecases.AddScooter
+namespace ScooterRental.Core.Validators
 {
     public class AddScooterValidator : IAddScooterValidator
     {
@@ -13,9 +13,9 @@ namespace ScooterRental.Core.Usecases.AddScooter
             this.getScooterByIdHandler = getScooterByIdHandler;
         }
 
-        public void Validate(string id)
+        public void Validate(string id, string companyId)
         {
-            var result = getScooterByIdHandler.Handle(id);
+            var result = getScooterByIdHandler.Handle(id, companyId);
 
             if (result != null)
             {

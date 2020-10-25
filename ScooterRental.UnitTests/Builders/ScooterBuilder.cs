@@ -9,24 +9,32 @@ namespace ScooterRental.UnitTests.Builders
         private string id;
         private decimal pricePerMinute;
         private bool isRented;
+        private Company company;
 
         public Scooter Build()
         {
-            if(scooter == null)
+            if (scooter == null)
             {
-                scooter = new Scooter(id, pricePerMinute);
+                scooter = new Scooter(id, pricePerMinute, company);
                 scooter.IsRented = isRented;
             }
 
             return scooter;
         }
 
-        public static ScooterBuilder Default()
+        public static ScooterBuilder Default(Company company)
         {
             return new ScooterBuilder()
                 .WithId(GetRandom.UniqueId())
                 .WithPricePerMinute(GetRandom.Decimal(0, 5))
-                .WithIsRented(false);
+                .WithIsRented(false)
+                .WithCompany(company);
+        }
+
+        private ScooterBuilder WithCompany(Company value)
+        {
+            company = value;
+            return this;
         }
 
         public ScooterBuilder WithId(string value)

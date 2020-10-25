@@ -5,6 +5,6 @@ namespace ScooterRental.Core.Interfaces.Usecases
 {
     public interface IGetScootersHandler
     {
-        IList<Scooter> Handle();
+        IList<Scooter> Handle(string companyId);
     }
 }

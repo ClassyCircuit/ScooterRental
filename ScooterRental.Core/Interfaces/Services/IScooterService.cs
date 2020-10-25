@@ -32,11 +32,5 @@ namespace ScooterRental.Core.Interfaces.Services
         /// <param name="scooterId">Unique ID of the scooter.</param>
         /// <returns>Return a particular scooter.</returns>
         Scooter GetScooterById(string scooterId);
-
-        /// <summary>
-        /// Updates existing scooter with new values.
-        /// </summary>
-        /// <param name="scooter"></param>
-        void UpdateScooter(Scooter scooter);
     }
 }

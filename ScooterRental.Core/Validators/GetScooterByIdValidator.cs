@@ -1,7 +1,7 @@
 ﻿using ScooterRental.Core.Exceptions;
 using ScooterRental.Core.Interfaces.Validators;
 
-namespace ScooterRental.Core.Usecases.GetScooterById
+namespace ScooterRental.Core.Validators
 {
     public class GetScooterByIdValidator : IGetScooterByIdValidator
     {

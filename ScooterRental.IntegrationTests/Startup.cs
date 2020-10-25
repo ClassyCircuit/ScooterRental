@@ -1,6 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using ScooterRental.Core.Interfaces.Services;
-using ScooterRental.Infrastructure;
 
 namespace ScooterRental.IntegrationTests
 {
@@ -11,7 +9,7 @@ namespace ScooterRental.IntegrationTests
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<IScooterService, ScooterService>();
+
         }
     }
 }

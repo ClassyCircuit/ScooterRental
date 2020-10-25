@@ -2,6 +2,6 @@
 {
     public interface IRemoveScooterValidator
     {
-        void Validate(string id);
+        void Validate(string id, string companyId);
     }
 }

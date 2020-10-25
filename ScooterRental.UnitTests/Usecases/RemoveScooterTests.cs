@@ -1,9 +1,9 @@
 ﻿using Moq;
 using ScooterRental.Core.Exceptions;
-using ScooterRental.Core.Interfaces.Services;
 using ScooterRental.Core.Interfaces.Usecases;
 using ScooterRental.Core.Interfaces.Validators;
-using ScooterRental.Core.Usecases.RemoveScooter;
+using ScooterRental.Core.Usecases;
+using ScooterRental.Core.Validators;
 using ScooterRental.UnitTests.Builders;
 using ScooterRental.UnitTests.Setup;
 using Shouldly;
@@ -16,24 +16,24 @@ namespace ScooterRental.UnitTests.Usecases
     {
         public Mock<RemoveScooterValidator> RemoveScooterValidator;
 
-        public RemoveScooterTests(Context context) : base(context)
+        public RemoveScooterTests(Setup.Mocks context) : base(context)
         {
-            RemoveScooterValidator = new Mock<RemoveScooterValidator>(Context.ScooterService.Object);
+            RemoveScooterValidator = new Mock<RemoveScooterValidator>();
         }
 
         [Fact]
         public void RemoveScooterValidator_IsRented_ThrowsException()
         {
             // Arrange
-            var rentedScooter = ScooterBuilder.Default().WithIsRented(true).Build();
+            var rentedScooter = ScooterBuilder.Default(Mocks.Company).WithIsRented(true).Build();
 
             var getScooterByIdHandler = new Mock<IGetScooterByIdHandler>();
-            getScooterByIdHandler.Setup(x => x.Handle(rentedScooter.Id)).Returns(rentedScooter);
+            getScooterByIdHandler.Setup(x => x.Handle(rentedScooter.Id, Mocks.Company.Id)).Returns(rentedScooter);
 
             RemoveScooterValidator validator = new RemoveScooterValidator(getScooterByIdHandler.Object);
 
             // Act
-            Action act = () => validator.Validate(rentedScooter.Id);
+            Action act = () => validator.Validate(rentedScooter.Id, Mocks.Company.Id);
 
             // Assert
             Should.Throw<RentedScooterCannotBeRemovedException>(act);
@@ -44,18 +44,15 @@ namespace ScooterRental.UnitTests.Usecases
         {
             string id = "1";
 
-            var service = new Mock<IScooterService>();
-            service.Setup(x=>x.RemoveScooter(id)).Verifiable();
-
             var validator = new Mock<IRemoveScooterValidator>();
-            validator.Setup(x=>x.Validate(id)).Verifiable();
+            validator.Setup(x => x.Validate(id, Mocks.Company.Id)).Verifiable();
 
-            RemoveScooterHandler handler = new RemoveScooterHandler(service.Object, validator.Object);
+            RemoveScooterHandler handler = new RemoveScooterHandler(Mocks.CompanyRepository.Object, validator.Object);
 
-            handler.Handle(id);
+            handler.Handle(id, Mocks.Company.Id);
 
             validator.Verify();
-            service.Verify();
+            validator.Verify();
         }
     }
 }
