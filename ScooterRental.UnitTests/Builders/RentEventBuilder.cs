@@ -1,8 +1,7 @@
 ﻿using ScooterRental.Core.Entities;
-using ScooterRental.UnitTests.Builders;
 using System;
 
-namespace rentEventRental.UnitTests.Builders
+namespace ScooterRental.UnitTests.Builders
 {
     public class RentEventBuilder
     {
@@ -15,18 +14,19 @@ namespace rentEventRental.UnitTests.Builders
         private decimal TotalPrice;
         private string Id;
         private Company company;
+        private string scooterId;
 
         public RentEvent Build()
         {
             if (rentEvent == null)
             {
-                rentEvent = new RentEvent(StartDate, EndDate, PricePerMinute, IsActive, Id, company);
+                rentEvent = new RentEvent(StartDate, EndDate, PricePerMinute, IsActive, Id, company, scooterId);
             }
 
             return rentEvent;
         }
 
-        public static RentEventBuilder Default(Company company)
+        public static RentEventBuilder Default(Company company, Scooter scooter)
         {
             return new RentEventBuilder()
                 .WithId(GetRandom.UniqueId())
@@ -35,7 +35,14 @@ namespace rentEventRental.UnitTests.Builders
                 .WithStartDate(DateTime.Now)
                 .WithEndDate(null)
                 .WithTotalPrice(0m)
-                .WithCompany(company);
+                .WithCompany(company)
+                .WithScooterId(scooter.Id);
+        }
+
+        private RentEventBuilder WithScooterId(string value)
+        {
+            scooterId = value;
+            return this;
         }
 
         public RentEventBuilder WithCompany(Company value)

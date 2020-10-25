@@ -15,5 +15,6 @@ namespace ScooterRental.Core.Interfaces.Services
         void RemoveScooter(string companyId, string id);
         void UpdateRentEvent(string companyId, RentEvent updatedEvent);
         void UpdateScooter(string companyId, Scooter scooter);
+        RentEvent GetActiveRentEventByScooterId(string companyId, string scooterId);
     }
 }

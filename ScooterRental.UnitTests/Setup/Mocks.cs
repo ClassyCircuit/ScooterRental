@@ -1,6 +1,4 @@
-﻿using CompanyRental.UnitTests.Builders;
-using Moq;
-using rentEventRental.UnitTests.Builders;
+﻿using Moq;
 using ScooterRental.Core.Entities;
 using ScooterRental.Core.Interfaces.Services;
 using ScooterRental.Core.Validators;
@@ -36,9 +34,9 @@ namespace ScooterRental.UnitTests.Setup
 
             RentEvents = new List<RentEvent>()
             {
-                RentEventBuilder.Default(Company).Build(),
-                RentEventBuilder.Default(Company).Build(),
-                RentEventBuilder.Default(Company).Build()
+                RentEventBuilder.Default(Company, Scooters[0]).Build(),
+                RentEventBuilder.Default(Company, Scooters[1]).Build(),
+                RentEventBuilder.Default(Company, Scooters[0]).Build()
             };
 
             Company.RentEvents = RentEvents;
@@ -51,6 +49,7 @@ namespace ScooterRental.UnitTests.Setup
             CompanyRepository = new Mock<ICompanyRepository>();
             CompanyRepository.Setup(x => x.GetScooters(Company.Id)).Returns(Scooters);
             CompanyRepository.Setup(x => x.GetScooterById(Company.Id, ExistingScooterId)).Returns(Scooters[0]);
+            CompanyRepository.Setup(x => x.GetCompanyByName(Company.Name)).Returns(Company);
         }
     }
 }

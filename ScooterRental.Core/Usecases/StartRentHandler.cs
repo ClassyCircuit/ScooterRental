@@ -32,7 +32,8 @@ namespace ScooterRental.Core.Usecases
                 endDate: null,
                 pricePerMinute: scooter.PricePerMinute,
                 isActive: true,
-                company: company));
+                company: company,
+                scooterId: scooter.Id));
         }
 
         private void SetIsRentedFlag(Scooter scooter, string companyId)

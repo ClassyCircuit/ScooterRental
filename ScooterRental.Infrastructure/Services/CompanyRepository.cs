@@ -72,9 +72,9 @@ namespace ScooterRental.Infrastructure.Services
             GetCompanyById(companyId).RentEvents.Add(rentEvent);
         }
 
-        public RentEvent GetRentEventById(string companyId, string rentEvent)
+        public RentEvent GetRentEventById(string companyId, string rentEventId)
         {
-            return GetCompanyById(companyId).RentEvents.Single(x => x.Id == rentEvent);
+            return GetCompanyById(companyId).RentEvents.Single(x => x.Id == rentEventId);
         }
 
         public void UpdateRentEvent(string companyId, RentEvent updatedEvent)
@@ -86,6 +86,12 @@ namespace ScooterRental.Infrastructure.Services
             existingEvent.PricePerMinute = updatedEvent.PricePerMinute;
             existingEvent.IsActive = updatedEvent.IsActive;
             existingEvent.TotalPrice = updatedEvent.TotalPrice;
+        }
+
+        public RentEvent GetActiveRentEventByScooterId(string companyId, string scooterId)
+        {
+            Company company = GetCompanyById(companyId);
+            return company.RentEvents.Single(x => x.ScooterId == scooterId && x.IsActive == true);
         }
     }
 }

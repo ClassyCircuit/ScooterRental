@@ -1,7 +1,6 @@
 ﻿using ScooterRental.Core.Entities;
-using ScooterRental.UnitTests.Builders;
 
-namespace CompanyRental.UnitTests.Builders
+namespace ScooterRental.UnitTests.Builders
 {
     public class CompanyBuilder
     {

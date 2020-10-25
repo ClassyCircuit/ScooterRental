@@ -4,7 +4,7 @@ namespace ScooterRental.Core.Entities
 {
     public class RentEvent
     {
-        public RentEvent(DateTime startDate, DateTime? endDate, decimal pricePerMinute, bool isActive, string id, Company company)
+        public RentEvent(DateTime startDate, DateTime? endDate, decimal pricePerMinute, bool isActive, string id, Company company, string scooterId)
         {
             StartDate = startDate;
             EndDate = endDate;
@@ -12,6 +12,7 @@ namespace ScooterRental.Core.Entities
             IsActive = isActive;
             Id = id;
             Company = company;
+            ScooterId = scooterId;
         }
 
         /// <summary>
@@ -45,5 +46,7 @@ namespace ScooterRental.Core.Entities
         public decimal TotalPrice { get; set; }
 
         public Company Company { get; set; }
+
+        public string ScooterId { get; set; }
     }
 }
