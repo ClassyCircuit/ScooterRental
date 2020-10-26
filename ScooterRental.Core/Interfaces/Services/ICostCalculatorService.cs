@@ -1,9 +1,10 @@
 ﻿using ScooterRental.Core.Entities;
+using System.Collections.Generic;
 
 namespace ScooterRental.Core.Interfaces.Services
 {
     public interface ICostCalculatorService
     {
-        decimal GetCostFor(RentEvent rentEvent);
+        IList<RentEvent> GetRentEventCosts(RentEvent rentEvent)
     }
 }

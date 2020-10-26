@@ -29,7 +29,7 @@ namespace ScooterRental.Core.Usecases
             validator.Validate(scooter);
 
             RentEvent rentEvent = companyRepository.GetActiveRentEventByScooterId(companyId, scooterId);
-            decimal totalCost = costCalculatorService.GetCostFor(rentEvent);
+            decimal totalCost = costCalculatorService.GetRentEventCosts(rentEvent);
 
             UpdateRentEvent(companyId, rentEvent, totalCost);
             DisableIsRentedOnScooter(companyId, scooter);
