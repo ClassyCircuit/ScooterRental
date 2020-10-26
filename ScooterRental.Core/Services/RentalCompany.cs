@@ -29,8 +29,7 @@ namespace ScooterRental.Core.Services
 
         public decimal EndRent(string id)
         {
-            decimal totalCost = endRentHandler.Handle(id, Company.Id);
-            // TODO: Call event that rent ended so company price can be calcualted.
+            return endRentHandler.Handle(id, Company.Id);
         }
         public decimal CalculateIncome(int? year, bool includeNotCompletedRentals)
         {

@@ -22,7 +22,7 @@ namespace ScooterRental.UnitTests.Services
                 mocks.Company
             };
 
-            context = new Context(mocks.RentEvents, mocks.Scooters, companies);
+            context = new Context(companies);
             repository = new CompanyRepository(context);
         }
 

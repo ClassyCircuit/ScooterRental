@@ -7,6 +7,9 @@ namespace ScooterRental.Core.Usecases
 {
     public class EndRentHandler : IEndRentHandler
     {
+        public delegate void RentEndedHandler();
+        public static event RentEndedHandler OnRentEnd;
+
         private readonly IEndRentHandlerValidator validator;
         private readonly IGetScooterByIdHandler getScooterByIdHandler;
         private readonly ICostCalculatorService costCalculatorService;
