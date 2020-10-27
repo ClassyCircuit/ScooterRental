@@ -77,7 +77,7 @@ namespace ScooterRental.Infrastructure.Services
             return GetCompanyById(companyId).RentEvents.Single(x => x.Id == rentEventId);
         }
 
-        public void UpdateRentEvent(string companyId, RentEvent updatedEvent)
+        public void UpsertRentEvent(string companyId, RentEvent updatedEvent)
         {
             var existingEvent = GetRentEventById(companyId, updatedEvent.Id);
 

@@ -2,6 +2,7 @@
 using ScooterRental.Core.Interfaces.Services;
 using ScooterRental.Core.Interfaces.Usecases;
 using ScooterRental.Core.Interfaces.Validators;
+using System.Collections.Generic;
 
 namespace ScooterRental.Core.Usecases
 {
@@ -14,34 +15,47 @@ namespace ScooterRental.Core.Usecases
         private readonly IGetScooterByIdHandler getScooterByIdHandler;
         private readonly ICostCalculatorService costCalculatorService;
         private readonly ICompanyRepository companyRepository;
+        private readonly IRentEventUpdateHandler rentEventUpdateHandler;
 
-        public EndRentHandler(IEndRentHandlerValidator endRentHandlerValidator, IGetScooterByIdHandler getScooterByIdHandler, ICostCalculatorService costCalculatorService, ICompanyRepository companyRepository)
+        public EndRentHandler(IEndRentHandlerValidator endRentHandlerValidator, IGetScooterByIdHandler getScooterByIdHandler, ICostCalculatorService costCalculatorService, ICompanyRepository companyRepository, IRentEventUpdateHandler rentEventUpdateHandler)
         {
             validator = endRentHandlerValidator;
             this.getScooterByIdHandler = getScooterByIdHandler;
             this.costCalculatorService = costCalculatorService;
             this.companyRepository = companyRepository;
+            this.rentEventUpdateHandler = rentEventUpdateHandler;
         }
 
+        /// <summary>
+        /// Handles stopping of an active rental for a scooter.
+        /// </summary>
+        /// <param name="scooterId">Scooter id for which to stop rent.</param>
+        /// <param name="companyId">Comapny to which the scooter belongs to.</param>
+        /// <returns></returns>
         public decimal Handle(string scooterId, string companyId)
         {
             var scooter = getScooterByIdHandler.Handle(scooterId, companyId);
             validator.Validate(scooter);
 
-            RentEvent rentEvent = companyRepository.GetActiveRentEventByScooterId(companyId, scooterId);
-            decimal totalCost = costCalculatorService.GetRentEventCosts(rentEvent);
+            IList<RentEvent> rentEvents = CalculateRentCostsForScooter(scooterId, companyId);
+            PersistCostsInStorage(companyId, rentEvents);
+            decimal totalCost = costCalculatorService.GetRentEventTotalCost(rentEvents);
 
-            UpdateRentEvent(companyId, rentEvent, totalCost);
             DisableIsRentedOnScooter(companyId, scooter);
 
             return totalCost;
         }
 
-        private void UpdateRentEvent(string companyId, RentEvent rentEvent, decimal totalCost)
+        private void PersistCostsInStorage(string companyId, IList<RentEvent> rentEvents)
         {
-            rentEvent.TotalPrice = totalCost;
-            rentEvent.IsActive = false;
-            companyRepository.UpdateRentEvent(companyId, rentEvent);
+            rentEventUpdateHandler.Handle(companyId, rentEvents);
+        }
+
+        private IList<RentEvent> CalculateRentCostsForScooter(string scooterId, string companyId)
+        {
+            RentEvent rentEvent = companyRepository.GetActiveRentEventByScooterId(companyId, scooterId);
+            IList<RentEvent> rentEvents = costCalculatorService.CalculateRentEventCosts(rentEvent);
+            return rentEvents;
         }
 
         private void DisableIsRentedOnScooter(string companyId, Scooter scooter)

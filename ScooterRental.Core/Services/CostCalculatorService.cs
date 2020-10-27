@@ -7,29 +7,59 @@ namespace ScooterRental.Core.Services
 {
     public class CostCalculatorService : ICostCalculatorService
     {
-        // TODO: If time < 1 min, return 0 cost
+        /// <summary>
+        /// Maximum money that is allowed to be charged for a rental per day.
+        /// </summary>
+        public decimal CostLimitPerDay { get; } = 20m;
 
-        // TODO: If time > 1 day - costs must be divided per day basis. Create new rent event for each day and close the previous one.
         /// <summary>
         /// Calculates total cost for a rent event.
         /// If it spans multiple days, then it is split into multiple rent events.
         /// </summary>
         /// <param name="rentEvent">Rent event for which to calculate costs</param>
         /// <returns></returns>
-        public IList<RentEvent> GetRentEventCosts(RentEvent rentEvent)
+        public IList<RentEvent> CalculateRentEventCosts(RentEvent rentEvent)
         {
             IList<RentEvent> rentEvents = new List<RentEvent>();
-            // calculate rental time
-            rentEvent.EndDate = DateTime.UtcNow;
-            TimeSpan duration = rentEvent.EndDate.Value - rentEvent.StartDate;
-            rentEvents.Add(rentEvent);
-            // if time < 1 min, return 0 cost
+            decimal minutesOfRent = Convert.ToDecimal((DateTime.UtcNow - rentEvent.StartDate).TotalMinutes);
 
-            // if time > 1 day, split into multiple events
+            decimal minutesTillCostLimit = CostLimitPerDay / rentEvent.PricePerMinute;
+
+            if (minutesOfRent < 1)
+            {
+                rentEvent.TotalPrice = 0;
+            }
+            else if (minutesOfRent <= minutesTillCostLimit)
+            {
+                rentEvent.TotalPrice = rentEvent.PricePerMinute * Convert.ToDecimal(minutesOfRent);
+            }
+            else
+            {
+                rentEvent.TotalPrice = CostLimitPerDay;
+                minutesTillCostLimit -= CostLimitPerDay;
+
+            }
+
 
             // return list of updated rent events
 
             return rentEvents;
+        }
+
+        /// <summary>
+        /// Sums up total cost for a list of rent events and returns it.
+        /// </summary>
+        /// <param name="rentEvents">list of rent events with already calculated costs.</param>
+        /// <returns></returns>
+        public decimal GetRentEventTotalCost(IList<RentEvent> rentEvents)
+        {
+            decimal sum = 0;
+            foreach (var x in rentEvents)
+            {
+                sum += x.TotalPrice;
+            }
+
+            return sum;
         }
     }
 }

@@ -5,6 +5,7 @@ namespace ScooterRental.Core.Interfaces.Services
 {
     public interface ICostCalculatorService
     {
-        IList<RentEvent> GetRentEventCosts(RentEvent rentEvent)
+        IList<RentEvent> CalculateRentEventCosts(RentEvent rentEvent);
+        decimal GetRentEventTotalCost(IList<RentEvent> rentEvents);
     }
 }

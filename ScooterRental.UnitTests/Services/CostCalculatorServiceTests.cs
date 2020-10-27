@@ -22,7 +22,7 @@ namespace ScooterRental.UnitTests.Services
             var rentEvent = RentEventBuilder.Default(Mocks.Company, scooter).WithStartDate(DateTime.UtcNow.AddHours(-7)).Build();
             CostCalculatorService service = new CostCalculatorService();
 
-            IList<RentEvent> updatedEvents = service.GetRentEventCosts(rentEvent);
+            IList<RentEvent> updatedEvents = service.CalculateRentEventCosts(rentEvent);
             updatedEvents.Count.ShouldBe(1);
             updatedEvents[0].TotalPrice.ShouldBe()
         }
