@@ -34,9 +34,9 @@ namespace ScooterRental.UnitTests.Setup
 
             RentEvents = new List<RentEvent>()
             {
-                RentEventBuilder.Default(Company, Scooters[0]).Build(),
-                RentEventBuilder.Default(Company, Scooters[1]).Build(),
-                RentEventBuilder.Default(Company, Scooters[0]).Build()
+                RentEventBuilder.Default(Company, Scooters[0]).WithTotalPrice(GetRandom.Decimal(0,5)).Build(),
+                RentEventBuilder.Default(Company, Scooters[1]).WithTotalPrice(GetRandom.Decimal(0,5)).Build(),
+                RentEventBuilder.Default(Company, Scooters[0]).WithTotalPrice(GetRandom.Decimal(0,5)).Build(),
             };
 
             Company.RentEvents = RentEvents;

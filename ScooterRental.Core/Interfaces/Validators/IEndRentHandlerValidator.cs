@@ -2,7 +2,7 @@
 
 namespace ScooterRental.Core.Interfaces.Validators
 {
-    public interface IEndRentHandlerValidator
+    public interface IEndRentValidator
     {
         void Validate(Scooter scooter);
     }

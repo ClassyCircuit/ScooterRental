@@ -3,6 +3,7 @@ using ScooterRental.Core.Interfaces.Services;
 using ScooterRental.Core.Interfaces.Usecases;
 using ScooterRental.Core.Interfaces.Validators;
 using ScooterRental.Core.Services;
+using System;
 using System.Collections.Generic;
 
 namespace ScooterRental.Core.Usecases
@@ -12,17 +13,17 @@ namespace ScooterRental.Core.Usecases
         public delegate void RentEndedHandler();
         public static event RentEndedHandler OnRentEnd;
 
-        private readonly IEndRentHandlerValidator validator;
+        private readonly IEndRentValidator validator;
         private readonly IGetScooterByIdHandler getScooterByIdHandler;
-        private readonly ICostCalculatorService costCalculatorService;
+        private readonly IRentalCostService rentalCostService;
         private readonly ICompanyRepository companyRepository;
         private readonly IRentEventUpdateHandler rentEventUpdateHandler;
 
-        public EndRentHandler(IEndRentHandlerValidator endRentHandlerValidator, IGetScooterByIdHandler getScooterByIdHandler, ICostCalculatorService costCalculatorService, ICompanyRepository companyRepository, IRentEventUpdateHandler rentEventUpdateHandler)
+        public EndRentHandler(IEndRentValidator endRentHandlerValidator, IGetScooterByIdHandler getScooterByIdHandler, IRentalCostService rentalCostService, ICompanyRepository companyRepository, IRentEventUpdateHandler rentEventUpdateHandler)
         {
             validator = endRentHandlerValidator;
             this.getScooterByIdHandler = getScooterByIdHandler;
-            this.costCalculatorService = costCalculatorService;
+            this.rentalCostService = rentalCostService;
             this.companyRepository = companyRepository;
             this.rentEventUpdateHandler = rentEventUpdateHandler;
         }
@@ -33,12 +34,12 @@ namespace ScooterRental.Core.Usecases
         /// <param name="scooterId">Scooter id for which to stop rent.</param>
         /// <param name="companyId">Comapny to which the scooter belongs to.</param>
         /// <returns></returns>
-        public decimal Handle(string scooterId, string companyId)
+        public decimal Handle(string scooterId, string companyId, DateTime endDate)
         {
             var scooter = getScooterByIdHandler.Handle(scooterId, companyId);
             validator.Validate(scooter);
 
-            IList<RentEvent> rentEvents = CalculateRentCostsForScooter(scooterId, companyId);
+            IList<RentEvent> rentEvents = CalculateRentalCostsForScooter(scooterId, companyId, endDate);
             PersistCostsInStorage(companyId, rentEvents);
             decimal totalCost = rentEvents.GetRentEventTotalCosts();
 
@@ -52,10 +53,10 @@ namespace ScooterRental.Core.Usecases
             rentEventUpdateHandler.Handle(companyId, rentEvents);
         }
 
-        private IList<RentEvent> CalculateRentCostsForScooter(string scooterId, string companyId)
+        private IList<RentEvent> CalculateRentalCostsForScooter(string scooterId, string companyId, DateTime endDate)
         {
             RentEvent rentEvent = companyRepository.GetActiveRentEventByScooterId(companyId, scooterId);
-            IList<RentEvent> rentEvents = costCalculatorService.CalculateRentEventCosts(rentEvent);
+            IList<RentEvent> rentEvents = rentalCostService.Calculate(rentEvent, endDate);
             return rentEvents;
         }
 

@@ -4,7 +4,7 @@ using ScooterRental.Core.Interfaces.Validators;
 
 namespace ScooterRental.Core.Validators
 {
-    public class EndRentHandlerValidator : IEndRentHandlerValidator
+    public class EndRentValidator : IEndRentValidator
     {
         public void Validate(Scooter scooter)
         {

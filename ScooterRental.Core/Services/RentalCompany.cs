@@ -1,6 +1,7 @@
 ﻿using ScooterRental.Core.Entities;
 using ScooterRental.Core.Interfaces.Services;
 using ScooterRental.Core.Interfaces.Usecases;
+using System;
 
 namespace ScooterRental.Core.Services
 {
@@ -29,7 +30,7 @@ namespace ScooterRental.Core.Services
 
         public decimal EndRent(string id)
         {
-            return endRentHandler.Handle(id, Company.Id);
+            return endRentHandler.Handle(id, Company.Id, DateTime.UtcNow);
         }
         public decimal CalculateIncome(int? year, bool includeNotCompletedRentals)
         {

@@ -25,18 +25,14 @@ namespace ScooterRental.Core.Services
 
             for (int i = 0; i < daysOfRent; i++)
             {
-                if (i == 0)
+                if (i > 0)
                 {
-                    rentEvent = UpdateRentEvent(rentEvent);
-                    updatedRentEvents.Add(rentEvent);
-                    continue;
+                    DateTime nextDay = rentEvent.StartDate.AddDays(1).Date;
+                    rentEvent = CreateNewEvent(rentEvent, nextDay);
                 }
 
-                DateTime nextDay = rentEvent.StartDate.AddDays(1).Date;
-                RentEvent nextDayEvent = CreateNewEvent(rentEvent, nextDay);
-
-                rentEvent = UpdateRentEvent(nextDayEvent);
-
+                bool isLastDay = i == (daysOfRent - 1);
+                rentEvent = UpdateRentEvent(rentEvent, isLastDay);
                 updatedRentEvents.Add(rentEvent);
             }
 
@@ -66,7 +62,7 @@ namespace ScooterRental.Core.Services
         /// </summary>
         /// <param name="rentEvent"></param>
         /// <returns></returns>
-        private RentEvent UpdateRentEvent(RentEvent rentEvent)
+        private RentEvent UpdateRentEvent(RentEvent rentEvent, bool isLastDay)
         {
             decimal minutesLeftInDay = GetMinutesLeftInDay(rentEvent);
             decimal minutesTillCostLimit = CostLimitPerDay / rentEvent.PricePerMinute;

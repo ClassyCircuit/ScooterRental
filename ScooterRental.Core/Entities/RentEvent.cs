@@ -30,10 +30,15 @@ namespace ScooterRental.Core.Entities
         /// </summary>
         public DateTime? EndDate { get; set; }
 
+        private decimal _pricePerMinute;
         /// <summary>
         /// Agreed price per minute for the entire rent period.
         /// </summary>
-        public decimal PricePerMinute { get; set; }
+        public decimal PricePerMinute
+        {
+            get => _pricePerMinute;
+            set => _pricePerMinute = Math.Round(value, 3);
+        }
 
         /// <summary>
         /// True if rent is still in-progress.
