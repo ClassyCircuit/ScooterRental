@@ -28,17 +28,24 @@ namespace ScooterRental.Core.Services
                 if (i == 0)
                 {
                     rentEvent = UpdateRentEvent(rentEvent);
+                    updatedRentEvents.Add(rentEvent);
+                    continue;
                 }
 
-                DateTime nextDay = rentEvent.StartDate.AddDays(1);
-                DateTime nextDayAtMidnight = nextDay.AddHours(-nextDay.Hour).AddMinutes(-nextDay.Minute).AddSeconds(nextDay.Second);
-                RentEvent nextDayEvent = new RentEvent(nextDayAtMidnight, null, rentEvent.PricePerMinute, rentEvent.IsActive, Guid.NewGuid().ToString(), rentEvent.Company, rentEvent.ScooterId);
+                DateTime nextDay = rentEvent.StartDate.AddDays(1).Date;
+                RentEvent nextDayEvent = CreateNewEvent(rentEvent, nextDay);
+
                 rentEvent = UpdateRentEvent(nextDayEvent);
 
                 updatedRentEvents.Add(rentEvent);
             }
 
             return updatedRentEvents;
+        }
+
+        private static RentEvent CreateNewEvent(RentEvent rentEvent, DateTime nextDayAtMidnight)
+        {
+            return new RentEvent(nextDayAtMidnight, null, rentEvent.PricePerMinute, rentEvent.IsActive, Guid.NewGuid().ToString(), rentEvent.Company, rentEvent.ScooterId);
         }
 
         /// <summary>

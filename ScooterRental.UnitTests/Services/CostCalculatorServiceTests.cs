@@ -18,7 +18,8 @@ namespace ScooterRental.UnitTests.Services
         [Fact]
         public void GetCosts_ForLessThan20EUR_ReturnsOneRentEvent()
         {
-            var scooter = ScooterBuilder.Default(Mocks.Company).WithPricePerMinute(1m).Build();
+            var scooter = ScooterBuilder.Default(Mocks.Company).WithPricePerMinute(2m).Build();
+            DateTime startDate = DateTime.Today.AddSeconds(-30);
             var rentEvent = RentEventBuilder.Default(Mocks.Company, scooter).WithStartDate(DateTime.UtcNow.AddHours(-7)).Build();
             CostCalculatorService service = new CostCalculatorService();
 
