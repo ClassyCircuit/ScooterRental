@@ -2,6 +2,7 @@
 using ScooterRental.Core.Interfaces.Services;
 using ScooterRental.Core.Interfaces.Usecases;
 using ScooterRental.Core.Interfaces.Validators;
+using ScooterRental.Core.Services;
 using System.Collections.Generic;
 
 namespace ScooterRental.Core.Usecases
@@ -39,7 +40,7 @@ namespace ScooterRental.Core.Usecases
 
             IList<RentEvent> rentEvents = CalculateRentCostsForScooter(scooterId, companyId);
             PersistCostsInStorage(companyId, rentEvents);
-            decimal totalCost = costCalculatorService.GetRentEventTotalCost(rentEvents);
+            decimal totalCost = rentEvents.GetRentEventTotalCosts();
 
             DisableIsRentedOnScooter(companyId, scooter);
 

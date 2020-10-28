@@ -20,46 +20,113 @@ namespace ScooterRental.Core.Services
         /// <returns></returns>
         public IList<RentEvent> CalculateRentEventCosts(RentEvent rentEvent)
         {
-            IList<RentEvent> rentEvents = new List<RentEvent>();
-            decimal minutesOfRent = Convert.ToDecimal((DateTime.UtcNow - rentEvent.StartDate).TotalMinutes);
+            IList<RentEvent> updatedRentEvents = new List<RentEvent>();
+            int daysOfRent = GetAmountOfDaysInRentalPeriod(rentEvent);
 
-            decimal minutesTillCostLimit = CostLimitPerDay / rentEvent.PricePerMinute;
+            for (int i = 0; i < daysOfRent; i++)
+            {
+                if (i == 0)
+                {
+                    rentEvent = UpdateRentEvent(rentEvent);
+                }
 
-            if (minutesOfRent < 1)
-            {
-                rentEvent.TotalPrice = 0;
-            }
-            else if (minutesOfRent <= minutesTillCostLimit)
-            {
-                rentEvent.TotalPrice = rentEvent.PricePerMinute * Convert.ToDecimal(minutesOfRent);
-            }
-            else
-            {
-                rentEvent.TotalPrice = CostLimitPerDay;
-                minutesTillCostLimit -= CostLimitPerDay;
+                DateTime nextDay = rentEvent.StartDate.AddDays(1);
+                DateTime nextDayAtMidnight = nextDay.AddHours(-nextDay.Hour).AddMinutes(-nextDay.Minute).AddSeconds(nextDay.Second);
+                RentEvent nextDayEvent = new RentEvent(nextDayAtMidnight, null, rentEvent.PricePerMinute, rentEvent.IsActive, Guid.NewGuid().ToString(), rentEvent.Company, rentEvent.ScooterId);
+                rentEvent = UpdateRentEvent(nextDayEvent);
 
+                updatedRentEvents.Add(rentEvent);
             }
 
-
-            // return list of updated rent events
-
-            return rentEvents;
+            return updatedRentEvents;
         }
 
         /// <summary>
-        /// Sums up total cost for a list of rent events and returns it.
+        /// Returns how many days the entire rental period spans.
         /// </summary>
-        /// <param name="rentEvents">list of rent events with already calculated costs.</param>
+        /// <param name="rentEvent"></param>
         /// <returns></returns>
-        public decimal GetRentEventTotalCost(IList<RentEvent> rentEvents)
+        private static int GetAmountOfDaysInRentalPeriod(RentEvent rentEvent)
         {
-            decimal sum = 0;
-            foreach (var x in rentEvents)
+            TimeSpan rentalTimeSpan = DateTime.UtcNow - rentEvent.StartDate;
+            int daysOfRent = Convert.ToInt32(Math.Ceiling(rentalTimeSpan.TotalDays));
+            return daysOfRent;
+        }
+
+        /// <summary>
+        /// Calculates if the cost limit has been reached for this day's RentEvent 
+        /// and depending on the result sets the total cost and also the end date.
+        /// </summary>
+        /// <param name="rentEvent"></param>
+        /// <returns></returns>
+        private RentEvent UpdateRentEvent(RentEvent rentEvent)
+        {
+            decimal minutesLeftInDay = GetMinutesLeftInDay(rentEvent);
+            decimal minutesTillCostLimit = CostLimitPerDay / rentEvent.PricePerMinute;
+
+            if (IsCostLimitReached(minutesLeftInDay, minutesTillCostLimit))
             {
-                sum += x.TotalPrice;
+                rentEvent = UpdateWhenLimitIsReached(rentEvent, minutesTillCostLimit);
+            }
+            else
+            {
+                rentEvent = UpdateWhenLimitIsNotReached(rentEvent, minutesLeftInDay);
             }
 
-            return sum;
+            return rentEvent;
+        }
+
+        /// <summary>
+        /// In case cost limit has been reached this day, then use it to set the total cost
+        /// and end date should be however long it took to reach the cost limit.
+        /// </summary>
+        /// <param name="rentEvent"></param>
+        /// <param name="minutesTillCostLimit"></param>
+        /// <returns></returns>
+        private RentEvent UpdateWhenLimitIsReached(RentEvent rentEvent, decimal minutesTillCostLimit)
+        {
+            rentEvent.TotalPrice = CostLimitPerDay;
+            rentEvent.EndDate = rentEvent.StartDate.AddMinutes(Convert.ToDouble(minutesTillCostLimit));
+
+            return rentEvent;
+        }
+
+        /// <summary>
+        /// If cost limit is not reached, use the actual rental time in that day to calculate the costs and end time.
+        /// </summary>
+        /// <param name="rentEvent"></param>
+        /// <param name="minutesLeftInDay"></param>
+        /// <returns></returns>
+        private RentEvent UpdateWhenLimitIsNotReached(RentEvent rentEvent, decimal minutesLeftInDay)
+        {
+            if (minutesLeftInDay < 1)
+            {
+                rentEvent.TotalPrice = 0;
+            }
+            else
+            {
+                rentEvent.TotalPrice = rentEvent.PricePerMinute * minutesLeftInDay;
+            }
+
+            rentEvent.EndDate = rentEvent.StartDate.AddMinutes(Convert.ToDouble(minutesLeftInDay));
+
+            return rentEvent;
+        }
+
+        private static decimal GetMinutesLeftInDay(RentEvent rentEvent)
+        {
+            return Convert.ToDecimal((new DateTime(rentEvent.StartDate.Year, rentEvent.StartDate.Month, rentEvent.StartDate.Day, 0, 0, 0) - rentEvent.StartDate).TotalMinutes);
+        }
+
+        /// <summary>
+        /// If the remaining time in the day is more than the time it takes to reach the maximum money limit, then the limit has been reached.
+        /// </summary>
+        /// <param name="minutesLeftInDay"></param>
+        /// <param name="minutesTillCostLimit"></param>
+        /// <returns></returns>
+        private bool IsCostLimitReached(decimal minutesLeftInDay, decimal minutesTillCostLimit)
+        {
+            return (minutesLeftInDay - minutesTillCostLimit) > 0;
         }
     }
 }
