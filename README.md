@@ -1,3 +1,0 @@
-# ScooterRental
-
-Clean Architecture implementation
