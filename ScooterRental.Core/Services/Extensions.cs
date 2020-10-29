@@ -7,12 +7,16 @@ namespace ScooterRental.Core.Services
 {
     public static class Extensions
     {
+        /// <summary>
+        /// Calculates total costs of given rent events.
+        /// </summary>
+        /// <param name="rentEvents"></param>
+        /// <returns></returns>
         public static decimal GetRentEventTotalCosts(this IList<RentEvent> rentEvents)
         {
             decimal sum = 0;
             try
             {
-
                 foreach (var x in rentEvents)
                 {
                     sum += x.TotalPrice;

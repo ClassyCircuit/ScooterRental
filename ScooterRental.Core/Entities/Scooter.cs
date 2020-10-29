@@ -1,5 +1,8 @@
 ﻿namespace ScooterRental.Core.Entities
 {
+    /// <summary>
+    /// Scooters that belong to a company and can be rented.
+    /// </summary>
     public class Scooter
     {
         /// <summary>

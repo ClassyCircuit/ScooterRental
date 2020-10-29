@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace ScooterRental.Core.Interfaces.Services
 {
+    /// <summary>
+    /// Primary interface for interacting with the scooter subcomponent in the system.
+    /// </summary>
     public interface IScooterService
     {
         /// <summary>

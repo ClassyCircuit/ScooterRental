@@ -1,5 +1,8 @@
 ﻿namespace ScooterRental.Core.Interfaces.Services
 {
+    /// <summary>
+    /// Primary interface for interacting with the rental system.
+    /// </summary>
     public interface IRentalCompany
     {
         /// <summary>

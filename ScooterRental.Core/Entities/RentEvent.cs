@@ -2,6 +2,11 @@
 
 namespace ScooterRental.Core.Entities
 {
+    /// <summary>
+    /// Represents a rental period for a scooter. 
+    /// Can be active or completed.
+    /// If rental period spans multiple days, then a new rent event is created for each day.
+    /// </summary>
     public class RentEvent
     {
         public RentEvent(DateTime startDate, DateTime? endDate, decimal pricePerMinute, bool isActive, string id, Company company, string scooterId)
