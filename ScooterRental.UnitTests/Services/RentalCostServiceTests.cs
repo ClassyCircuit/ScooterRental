@@ -37,6 +37,17 @@ namespace ScooterRental.UnitTests.Services
             service = new RentalCostService(costLimitPerDay);
         }
 
+        private static void VerifyEventFields(decimal totalCost, DateTime endDate, RentEvent updatedEvent)
+        {
+            updatedEvent.TotalPrice.ShouldBe(totalCost);
+            updatedEvent.EndDate.ShouldBe(endDate);
+        }
+
+        private static void VerifyEventCount(IList<RentEvent> updatedEvents)
+        {
+            updatedEvents.Count.ShouldBe(2, "Two rent events should have been created");
+        }
+
         [Fact]
         public void Calculate_LessThan20EUR_ReturnsOneRentEvent()
         {
@@ -117,10 +128,9 @@ namespace ScooterRental.UnitTests.Services
         public void Calculate_FirstDayUnderLimit_SecondDayUnderLimit()
         {
             Setup(2m, startDate: DateTime.Today.AddMinutes(-5), endDate: DateTime.Today.AddMinutes(5));
-            int minutesTillCostLimit = (int)Math.Floor(costLimitPerDay / rentEvent.PricePerMinute);
 
             decimal firstDayCost = 10m;
-            DateTime firstDayEndDate = DateTime.Today.Date;
+            DateTime firstDayEndDate = DateTime.Today.Date.AddTicks(-1);
 
             decimal secondDayCost = 10m;
             DateTime secondDayEndDate = endDate;
@@ -131,16 +141,45 @@ namespace ScooterRental.UnitTests.Services
             VerifyEventFields(firstDayCost, firstDayEndDate, updatedEvents[0]);
             VerifyEventFields(secondDayCost, secondDayEndDate, updatedEvents[1]);
         }
-
-        private static void VerifyEventFields(decimal totalCost, DateTime endDate, RentEvent updatedEvent)
+        // TODO: Refactor tests to get rid of duplication
+        [Fact]
+        public void Calculate_FirstDayLessThanMinute_SecondDayOverLimit()
         {
-            updatedEvent.TotalPrice.ShouldBe(totalCost);
-            updatedEvent.EndDate.ShouldBe(endDate);
+            Setup(2m, startDate: DateTime.Today.AddSeconds(-5), endDate: DateTime.Today.AddHours(15));
+            int minutesTillCostLimit = (int)Math.Floor(costLimitPerDay / rentEvent.PricePerMinute);
+
+            decimal firstDayCost = 0m;
+            DateTime firstDayEndDate = DateTime.Today.Date.AddTicks(-1);
+
+            decimal secondDayCost = 20m;
+            DateTime secondDayEndDate = endDate.Date.AddMinutes(minutesTillCostLimit);
+
+            IList<RentEvent> updatedEvents = service.Calculate(rentEvent, endDate);
+
+            VerifyEventCount(updatedEvents);
+            VerifyEventFields(firstDayCost, firstDayEndDate, updatedEvents[0]);
+            VerifyEventFields(secondDayCost, secondDayEndDate, updatedEvents[1]);
         }
 
-        private static void VerifyEventCount(IList<RentEvent> updatedEvents)
+        [Fact]
+        public void Calculate_FirstDayLessThanMinute_SecondLessThanMinute()
         {
-            updatedEvents.Count.ShouldBe(2, "Two rent events should have been created");
+            Setup(2m, startDate: DateTime.Today.AddSeconds(-5), endDate: DateTime.Today.AddSeconds(5));
+            int minutesTillCostLimit = (int)Math.Floor(costLimitPerDay / rentEvent.PricePerMinute);
+
+            decimal firstDayCost = 0m;
+            DateTime firstDayEndDate = DateTime.Today.Date.AddTicks(-1);
+
+            decimal secondDayCost = 0m;
+            DateTime secondDayEndDate = endDate;
+
+            IList<RentEvent> updatedEvents = service.Calculate(rentEvent, endDate);
+
+            VerifyEventCount(updatedEvents);
+            VerifyEventFields(firstDayCost, firstDayEndDate, updatedEvents[0]);
+            VerifyEventFields(secondDayCost, secondDayEndDate, updatedEvents[1]);
         }
+
+
     }
 }

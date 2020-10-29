@@ -61,17 +61,18 @@ namespace ScooterRental.Core.Services
             int minutesTillCostLimit = (int)Math.Floor(CostLimitPerDay / rentEvent.PricePerMinute);
             DateTime ActualEndDate = endDate;
             int minutesLeftInDay = GetMinutesLeftInDay(rentEvent);
+            TimeSpan timeLeftInDay = GetTimeLeftInDay(startDate);
 
-            int rentDuration = (int)Math.Floor((endDate - startDate).TotalMinutes);
+            TimeSpan rentDuration = endDate - startDate;
 
             // If remaining rent period spills over to the next day, then calculate cost only for remaining time in the current day.
-            if (minutesLeftInDay < rentDuration)
+            if (timeLeftInDay < rentDuration)
             {
-                rentDuration = minutesLeftInDay;
-                ActualEndDate = startDate.AddMinutes(minutesLeftInDay);
+                rentDuration = timeLeftInDay;
+                ActualEndDate = startDate + timeLeftInDay;
             }
 
-            decimal totalCost = Math.Round(rentDuration * rentEvent.PricePerMinute, 2);
+            decimal totalCost = Math.Round(Convert.ToDecimal(rentDuration.TotalMinutes) * rentEvent.PricePerMinute, 2);
 
             if (totalCost > CostLimitPerDay)
             {
@@ -79,10 +80,21 @@ namespace ScooterRental.Core.Services
                 ActualEndDate = startDate.AddMinutes(minutesTillCostLimit);
             }
 
+            // If total rent period is less than one minute, don't charge anything.
+            if (totalCost < rentEvent.PricePerMinute)
+            {
+                totalCost = 0m;
+            }
+
             rentEvent.TotalPrice = totalCost;
             rentEvent.EndDate = ActualEndDate;
 
             return rentEvent;
+        }
+
+        private TimeSpan GetTimeLeftInDay(DateTime StartDate)
+        {
+            return StartDate.Date.AddDays(1).AddTicks(-1) - StartDate;
         }
 
         private static int GetMinutesLeftInDay(RentEvent rentEvent)
