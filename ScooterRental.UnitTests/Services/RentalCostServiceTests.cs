@@ -26,6 +26,12 @@ namespace ScooterRental.UnitTests.Services
             costLimitPerDay = 20m;
         }
 
+        /// <summary>
+        /// Set up scooter, rent event and service to use in tests.
+        /// </summary>
+        /// <param name="pricePerMinute"></param>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
         private void Setup(decimal pricePerMinute, DateTime startDate, DateTime endDate)
         {
             scooter = ScooterBuilder.Default(Data.Company).WithPricePerMinute(pricePerMinute).Build();
@@ -45,7 +51,7 @@ namespace ScooterRental.UnitTests.Services
 
         private static void VerifyEventCount(IList<RentEvent> updatedEvents, int count)
         {
-            updatedEvents.Count.ShouldBe(count, "Two rent events should have been created");
+            updatedEvents.Count.ShouldBe(count, $"{count} rent events should have been created");
         }
 
         [Fact]
@@ -98,11 +104,7 @@ namespace ScooterRental.UnitTests.Services
             decimal secondDayCost = 5 * rentEvent.PricePerMinute;
             DateTime secondDayEndDate = endDate;
 
-            IList<RentEvent> updatedEvents = service.Calculate(rentEvent, endDate);
-
-            VerifyEventCount(updatedEvents, 2);
-            VerifyEventFields(firstDayCost, firstDayEndDate, updatedEvents[0]);
-            VerifyEventFields(secondDayCost, secondDayEndDate, updatedEvents[1]);
+            TestTwoEvents(firstDayCost, firstDayEndDate, secondDayCost, secondDayEndDate);
         }
 
         [Fact]
@@ -117,11 +119,7 @@ namespace ScooterRental.UnitTests.Services
             decimal secondDayCost = 0m;
             DateTime secondDayEndDate = endDate;
 
-            IList<RentEvent> updatedEvents = service.Calculate(rentEvent, endDate);
-
-            VerifyEventCount(updatedEvents, 2);
-            VerifyEventFields(firstDayCost, firstDayEndDate, updatedEvents[0]);
-            VerifyEventFields(secondDayCost, secondDayEndDate, updatedEvents[1]);
+            TestTwoEvents(firstDayCost, firstDayEndDate, secondDayCost, secondDayEndDate);
         }
 
         [Fact]
@@ -135,13 +133,9 @@ namespace ScooterRental.UnitTests.Services
             decimal secondDayCost = 10m;
             DateTime secondDayEndDate = endDate;
 
-            IList<RentEvent> updatedEvents = service.Calculate(rentEvent, endDate);
-
-            VerifyEventCount(updatedEvents, 2);
-            VerifyEventFields(firstDayCost, firstDayEndDate, updatedEvents[0]);
-            VerifyEventFields(secondDayCost, secondDayEndDate, updatedEvents[1]);
+            TestTwoEvents(firstDayCost, firstDayEndDate, secondDayCost, secondDayEndDate);
         }
-        // TODO: Refactor tests to get rid of duplication
+
         [Fact]
         public void Calculate_FirstDayLessThanMinute_SecondDayOverLimit()
         {
@@ -154,18 +148,13 @@ namespace ScooterRental.UnitTests.Services
             decimal secondDayCost = 20m;
             DateTime secondDayEndDate = endDate.Date.AddMinutes(minutesTillCostLimit);
 
-            IList<RentEvent> updatedEvents = service.Calculate(rentEvent, endDate);
-
-            VerifyEventCount(updatedEvents, 2);
-            VerifyEventFields(firstDayCost, firstDayEndDate, updatedEvents[0]);
-            VerifyEventFields(secondDayCost, secondDayEndDate, updatedEvents[1]);
+            TestTwoEvents(firstDayCost, firstDayEndDate, secondDayCost, secondDayEndDate);
         }
 
         [Fact]
         public void Calculate_FirstDayLessThanMinute_SecondDayLessThanMinute()
         {
             Setup(2m, startDate: DateTime.Today.AddSeconds(-5), endDate: DateTime.Today.AddSeconds(5));
-            int minutesTillCostLimit = (int)Math.Floor(costLimitPerDay / rentEvent.PricePerMinute);
 
             decimal firstDayCost = 0m;
             DateTime firstDayEndDate = DateTime.Today.Date.AddTicks(-1);
@@ -173,11 +162,7 @@ namespace ScooterRental.UnitTests.Services
             decimal secondDayCost = 0m;
             DateTime secondDayEndDate = endDate;
 
-            IList<RentEvent> updatedEvents = service.Calculate(rentEvent, endDate);
-
-            VerifyEventCount(updatedEvents, 2);
-            VerifyEventFields(firstDayCost, firstDayEndDate, updatedEvents[0]);
-            VerifyEventFields(secondDayCost, secondDayEndDate, updatedEvents[1]);
+            TestTwoEvents(firstDayCost, firstDayEndDate, secondDayCost, secondDayEndDate);
         }
 
         [Fact]
@@ -192,56 +177,40 @@ namespace ScooterRental.UnitTests.Services
             decimal secondDayCost = 20m;
             DateTime secondDayEndDate = endDate.Date.AddMinutes(minutesTillCostLimit);
 
-            IList<RentEvent> updatedEvents = service.Calculate(rentEvent, endDate);
-
-            VerifyEventCount(updatedEvents, 2);
-            VerifyEventFields(firstDayCost, firstDayEndDate, updatedEvents[0]);
-            VerifyEventFields(secondDayCost, secondDayEndDate, updatedEvents[1]);
+            TestTwoEvents(firstDayCost, firstDayEndDate, secondDayCost, secondDayEndDate);
         }
 
         [Fact]
         public void Calculate_FirstDayLessThanMinute_SecondDayUnderLimit()
         {
             Setup(2m, startDate: DateTime.Today.AddSeconds(-59), endDate: DateTime.Today.AddMinutes(3));
-            int minutesTillCostLimit = (int)Math.Floor(costLimitPerDay / rentEvent.PricePerMinute);
-
             decimal firstDayCost = 0m;
             DateTime firstDayEndDate = DateTime.Today.Date.AddTicks(-1);
 
             decimal secondDayCost = 6m;
             DateTime secondDayEndDate = endDate;
 
-            IList<RentEvent> updatedEvents = service.Calculate(rentEvent, endDate);
-
-            VerifyEventCount(updatedEvents, 2);
-            VerifyEventFields(firstDayCost, firstDayEndDate, updatedEvents[0]);
-            VerifyEventFields(secondDayCost, secondDayEndDate, updatedEvents[1]);
+            TestTwoEvents(firstDayCost, firstDayEndDate, secondDayCost, secondDayEndDate);
         }
 
         [Fact]
         public void Calculate_FirstDayUnderLimit_SecondDayLessThanMinute()
         {
             Setup(2m, startDate: DateTime.Today.AddMinutes(-3), endDate: DateTime.Today.AddSeconds(40));
-            int minutesTillCostLimit = (int)Math.Floor(costLimitPerDay / rentEvent.PricePerMinute);
-
             decimal firstDayCost = 6m;
             DateTime firstDayEndDate = DateTime.Today.Date.AddTicks(-1);
 
             decimal secondDayCost = 0m;
             DateTime secondDayEndDate = endDate;
 
-            IList<RentEvent> updatedEvents = service.Calculate(rentEvent, endDate);
-
-            VerifyEventCount(updatedEvents, 2);
-            VerifyEventFields(firstDayCost, firstDayEndDate, updatedEvents[0]);
-            VerifyEventFields(secondDayCost, secondDayEndDate, updatedEvents[1]);
+            TestTwoEvents(firstDayCost, firstDayEndDate, secondDayCost, secondDayEndDate);
         }
 
         [Fact]
         public void Calculate_FirstDayUnderLimit_SecondDayOverLimit()
         {
             Setup(2m, startDate: DateTime.Today.AddMinutes(-6), endDate: DateTime.Today.AddHours(3));
-            int minutesTillCostLimit = (int)Math.Floor(costLimitPerDay / rentEvent.PricePerMinute);
+            int minutesTillCostLimit = GetMinutesTillCostLimit();
 
             decimal firstDayCost = 12m;
             DateTime firstDayEndDate = DateTime.Today.Date.AddTicks(-1);
@@ -249,6 +218,16 @@ namespace ScooterRental.UnitTests.Services
             decimal secondDayCost = 20m;
             DateTime secondDayEndDate = endDate.Date.AddMinutes(minutesTillCostLimit);
 
+            TestTwoEvents(firstDayCost, firstDayEndDate, secondDayCost, secondDayEndDate);
+        }
+
+        private int GetMinutesTillCostLimit()
+        {
+            return (int)Math.Floor(costLimitPerDay / rentEvent.PricePerMinute);
+        }
+
+        private void TestTwoEvents(decimal firstDayCost, DateTime firstDayEndDate, decimal secondDayCost, DateTime secondDayEndDate)
+        {
             IList<RentEvent> updatedEvents = service.Calculate(rentEvent, endDate);
 
             VerifyEventCount(updatedEvents, 2);
@@ -278,7 +257,5 @@ namespace ScooterRental.UnitTests.Services
             VerifyEventFields(secondDayCost, secondDayEndDate, updatedEvents[1]);
             VerifyEventFields(thirdDayCost, thirdDayEndDate, updatedEvents[2]);
         }
-
-
     }
 }
