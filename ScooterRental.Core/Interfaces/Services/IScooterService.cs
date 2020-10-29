@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace ScooterRental.Core.Interfaces.Services
 {
-    // TODO: Make the same approach as rental company - expose this interface to user and call handlers from it.
     public interface IScooterService
     {
         /// <summary>
@@ -12,7 +11,6 @@ namespace ScooterRental.Core.Interfaces.Services
         /// <param name="id">Unique ID of the scooter.</param>
         /// <param name="pricePerMinute">Rental price of the scooter per one minute.</param>
         void AddScooter(string id, decimal pricePerMinute);
-        // TODO: factory that creates new scooters
 
         /// <summary>
         /// Remove scooter. This action is not allowed for scooters if the rental is in progress.
