@@ -1,8 +1,8 @@
 ﻿using Moq;
 using ScooterRental.Core.Entities;
 using ScooterRental.Core.Interfaces.Services;
+using ScooterRental.Core.Services.Builders;
 using ScooterRental.Core.Usecases;
-using ScooterRental.UnitTests.Builders;
 using ScooterRental.UnitTests.Setup;
 using Shouldly;
 using System;

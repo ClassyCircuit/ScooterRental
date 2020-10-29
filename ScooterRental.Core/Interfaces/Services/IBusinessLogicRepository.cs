@@ -7,6 +7,17 @@ namespace ScooterRental.Core.Interfaces.Services
     /// </summary>
     public interface IBusinessLogicRepository
     {
+        /// <summary>
+        /// Retrives price limits.
+        /// </summary>
+        /// <param name="companyId"></param>
+        /// <returns></returns>
         PriceLimit GetPriceLimits(string companyId);
+
+        /// <summary>
+        /// Updates price limit for a company.
+        /// </summary>
+        /// <param name="priceLimit"></param>
+        void UpdatePriceLimit(PriceLimit priceLimit, string companyId);
     }
 }

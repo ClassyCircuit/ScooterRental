@@ -2,7 +2,7 @@
 using ScooterRental.Core.Interfaces.Services;
 using ScooterRental.Core.Interfaces.Usecases;
 using ScooterRental.Core.Services;
-using ScooterRental.UnitTests.Builders;
+using ScooterRental.Core.Services.Builders;
 using ScooterRental.UnitTests.Setup;
 using Xunit;
 

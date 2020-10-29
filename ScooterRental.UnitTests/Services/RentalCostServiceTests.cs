@@ -1,6 +1,6 @@
 ﻿using ScooterRental.Core.Entities;
 using ScooterRental.Core.Services;
-using ScooterRental.UnitTests.Builders;
+using ScooterRental.Core.Services.Builders;
 using ScooterRental.UnitTests.Setup;
 using Shouldly;
 using System;

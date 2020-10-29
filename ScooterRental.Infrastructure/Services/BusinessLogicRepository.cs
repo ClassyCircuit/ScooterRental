@@ -17,5 +17,11 @@ namespace ScooterRental.Infrastructure.Services
             var company = companyRepository.GetCompanyById(companyId);
             return company.PriceLimit;
         }
+
+        public void UpdatePriceLimit(PriceLimit priceLimit, string companyId)
+        {
+            var company = companyRepository.GetCompanyById(companyId);
+            company.PriceLimit = priceLimit;
+        }
     }
 }

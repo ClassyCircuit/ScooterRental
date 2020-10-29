@@ -12,6 +12,15 @@ namespace ScooterRental.IntegrationTests
         {
             this.scooterServiceHandler = scooterServiceHandler;
             this.rentalCompanyHandler = rentalCompanyHandler;
+            Initialize();
+        }
+
+        /// <summary>
+        /// Inserts initial data needed for application logic to function.
+        /// </summary>
+        private void Initialize()
+        {
+
         }
 
         [Fact]

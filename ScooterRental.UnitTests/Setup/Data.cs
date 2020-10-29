@@ -1,5 +1,5 @@
 ﻿using ScooterRental.Core.Entities;
-using ScooterRental.UnitTests.Builders;
+using ScooterRental.Core.Services.Builders;
 using System.Collections.Generic;
 
 namespace ScooterRental.UnitTests.Setup
@@ -18,6 +18,7 @@ namespace ScooterRental.UnitTests.Setup
         public Data()
         {
             Company = CompanyBuilder.Default().Build();
+            PriceLimit = PriceLimitBuilder.Default(Company).Build();
 
             Scooters = new List<Scooter>()
             {
@@ -40,10 +41,6 @@ namespace ScooterRental.UnitTests.Setup
 
             ExistingScooterId = Scooters[0].Id;
 
-            PriceLimit = new PriceLimit()
-            {
-                CostLimitPerDay = 20m
-            };
         }
     }
 }
