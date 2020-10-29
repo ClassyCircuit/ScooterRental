@@ -16,7 +16,7 @@ namespace ScooterRental.UnitTests.Usecases
     {
         public Mock<RemoveScooterValidator> RemoveScooterValidator;
 
-        public RemoveScooterTests(Setup.Mocks context) : base(context)
+        public RemoveScooterTests(Setup.Data context) : base(context)
         {
             RemoveScooterValidator = new Mock<RemoveScooterValidator>();
         }
@@ -25,15 +25,15 @@ namespace ScooterRental.UnitTests.Usecases
         public void RemoveScooterValidator_IsRented_ThrowsException()
         {
             // Arrange
-            var rentedScooter = ScooterBuilder.Default(Mocks.Company).WithIsRented(true).Build();
+            var rentedScooter = ScooterBuilder.Default(Data.Company).WithIsRented(true).Build();
 
             var getScooterByIdHandler = new Mock<IGetScooterByIdHandler>();
-            getScooterByIdHandler.Setup(x => x.Handle(rentedScooter.Id, Mocks.Company.Id)).Returns(rentedScooter);
+            getScooterByIdHandler.Setup(x => x.Handle(rentedScooter.Id, Data.Company.Id)).Returns(rentedScooter);
 
             RemoveScooterValidator validator = new RemoveScooterValidator(getScooterByIdHandler.Object);
 
             // Act
-            Action act = () => validator.Validate(rentedScooter.Id, Mocks.Company.Id);
+            Action act = () => validator.Validate(rentedScooter.Id, Data.Company.Id);
 
             // Assert
             Should.Throw<RentedScooterCannotBeRemovedException>(act);
@@ -45,11 +45,11 @@ namespace ScooterRental.UnitTests.Usecases
             string id = "1";
 
             var validator = new Mock<IRemoveScooterValidator>();
-            validator.Setup(x => x.Validate(id, Mocks.Company.Id)).Verifiable();
+            validator.Setup(x => x.Validate(id, Data.Company.Id)).Verifiable();
 
-            RemoveScooterHandler handler = new RemoveScooterHandler(Mocks.CompanyRepository.Object, validator.Object);
+            RemoveScooterHandler handler = new RemoveScooterHandler(Data.CompanyRepository.Object, validator.Object);
 
-            handler.Handle(id, Mocks.Company.Id);
+            handler.Handle(id, Data.Company.Id);
 
             validator.Verify();
             validator.Verify();

@@ -11,14 +11,14 @@ namespace ScooterRental.Core.Services
 
         readonly IStartRentHandler startRentHandler;
         readonly IEndRentHandler endRentHandler;
-        readonly ICalculateIncomeHandler calculateIncomeHandler;
+        readonly IIncomeReportHandler incomeReportHandler;
 
-        public RentalCompany(IStartRentHandler startRentHandler, Company company, IEndRentHandler endRentHandler, ICalculateIncomeHandler calculateIncomeHandler)
+        public RentalCompany(IStartRentHandler startRentHandler, Company company, IEndRentHandler endRentHandler, IIncomeReportHandler incomeReportHandler)
         {
             this.startRentHandler = startRentHandler;
             Company = company;
             this.endRentHandler = endRentHandler;
-            this.calculateIncomeHandler = calculateIncomeHandler;
+            this.incomeReportHandler = incomeReportHandler;
         }
 
         public string Name => Company.Name;
@@ -34,7 +34,7 @@ namespace ScooterRental.Core.Services
         }
         public decimal CalculateIncome(int? year, bool includeNotCompletedRentals)
         {
-            return calculateIncomeHandler.Handle(year, includeNotCompletedRentals, Company.Id);
+            return incomeReportHandler.Handle(year, includeNotCompletedRentals, Company.Id, DateTime.UtcNow);
         }
 
     }

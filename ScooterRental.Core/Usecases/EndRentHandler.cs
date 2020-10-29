@@ -40,17 +40,13 @@ namespace ScooterRental.Core.Usecases
             validator.Validate(scooter);
 
             IList<RentEvent> rentEvents = CalculateRentalCostsForScooter(scooterId, companyId, endDate);
-            PersistCostsInStorage(companyId, rentEvents);
+            rentEventUpdateHandler.Handle(companyId, rentEvents);
+
             decimal totalCost = rentEvents.GetRentEventTotalCosts();
 
             DisableIsRentedOnScooter(companyId, scooter);
 
             return totalCost;
-        }
-
-        private void PersistCostsInStorage(string companyId, IList<RentEvent> rentEvents)
-        {
-            rentEventUpdateHandler.Handle(companyId, rentEvents);
         }
 
         private IList<RentEvent> CalculateRentalCostsForScooter(string scooterId, string companyId, DateTime endDate)

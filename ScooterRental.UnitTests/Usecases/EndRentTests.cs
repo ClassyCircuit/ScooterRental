@@ -21,7 +21,7 @@ namespace ScooterRental.UnitTests.Usecases
         private Mock<IRentEventUpdateHandler> rentEventUpdateHandler;
         private EndRentHandler endRentHandler;
 
-        public EndRentTests(Setup.Mocks context) : base(context)
+        public EndRentTests(Setup.Data context) : base(context)
         {
             endRentValidator = new Mock<IEndRentValidator>();
             getScooterByIdHandler = new Mock<IGetScooterByIdHandler>();
@@ -36,16 +36,16 @@ namespace ScooterRental.UnitTests.Usecases
             decimal totalCostForRentalPeriod = GetRandom.Decimal(0, 100);
             DateTime endDate = DateTime.UtcNow;
 
-            endRentValidator.Setup(x => x.Validate(Mocks.Scooters[0])).Verifiable();
-            getScooterByIdHandler.Setup(x => x.Handle(Mocks.ExistingScooterId, Mocks.Company.Id)).Returns(Mocks.Scooters[0]).Verifiable();
-            rentalCostService.Setup(x => x.Calculate(Mocks.RentEvents[0], endDate)).Returns(Mocks.RentEvents).Verifiable();
-            Mocks.CompanyRepository.Setup(x => x.GetActiveRentEventByScooterId(Mocks.Company.Id, Mocks.Scooters[0].Id)).Returns(Mocks.RentEvents[0]);
+            endRentValidator.Setup(x => x.Validate(Data.Scooters[0])).Verifiable();
+            getScooterByIdHandler.Setup(x => x.Handle(Data.ExistingScooterId, Data.Company.Id)).Returns(Data.Scooters[0]).Verifiable();
+            rentalCostService.Setup(x => x.Calculate(Data.RentEvents[0], endDate)).Returns(Data.RentEvents).Verifiable();
+            Data.CompanyRepository.Setup(x => x.GetActiveRentEventByScooterId(Data.Company.Id, Data.Scooters[0].Id)).Returns(Data.RentEvents[0]);
+            rentEventUpdateHandler.Setup(x => x.Handle(Data.Company.Id, Data.RentEvents)).Verifiable();
 
-            endRentHandler = new EndRentHandler(endRentValidator.Object, getScooterByIdHandler.Object, rentalCostService.Object, Mocks.CompanyRepository.Object, rentEventUpdateHandler.Object);
-            rentEventUpdateHandler.Setup(x => x.Handle(Mocks.Company.Id, Mocks.RentEvents)).Verifiable();
+            endRentHandler = new EndRentHandler(endRentValidator.Object, getScooterByIdHandler.Object, rentalCostService.Object, Data.CompanyRepository.Object, rentEventUpdateHandler.Object);
 
             // Act
-            endRentHandler.Handle(Mocks.Scooters[0].Id, Mocks.Company.Id, endDate);
+            endRentHandler.Handle(Data.Scooters[0].Id, Data.Company.Id, endDate);
 
             // Assert
             endRentValidator.Verify();
@@ -57,18 +57,18 @@ namespace ScooterRental.UnitTests.Usecases
         [Fact]
         public void Handler_OnSuccess_ReturnsTotalCost()
         {
-            var rentedScooter = ScooterBuilder.Default(Mocks.Company).WithIsRented(true).Build();
-            var rentEvent = RentEventBuilder.Default(Mocks.Company, rentedScooter).Build();
+            var rentedScooter = ScooterBuilder.Default(Data.Company).WithIsRented(true).Build();
+            var rentEvent = RentEventBuilder.Default(Data.Company, rentedScooter).Build();
             var endDate = DateTime.UtcNow;
             decimal totalCostForRentalPeriod = CalculateExpectedRentalCosts();
 
-            getScooterByIdHandler.Setup(x => x.Handle(rentedScooter.Id, Mocks.Company.Id)).Returns(rentedScooter);
-            rentalCostService.Setup(x => x.Calculate(rentEvent, endDate)).Returns(Mocks.RentEvents);
-            Mocks.CompanyRepository.Setup(x => x.GetActiveRentEventByScooterId(Mocks.Company.Id, rentedScooter.Id)).Returns(rentEvent);
+            getScooterByIdHandler.Setup(x => x.Handle(rentedScooter.Id, Data.Company.Id)).Returns(rentedScooter);
+            rentalCostService.Setup(x => x.Calculate(rentEvent, endDate)).Returns(Data.RentEvents);
+            Data.CompanyRepository.Setup(x => x.GetActiveRentEventByScooterId(Data.Company.Id, rentedScooter.Id)).Returns(rentEvent);
 
-            endRentHandler = new EndRentHandler(endRentValidator.Object, getScooterByIdHandler.Object, rentalCostService.Object, Mocks.CompanyRepository.Object, new Mock<IRentEventUpdateHandler>().Object);
+            endRentHandler = new EndRentHandler(endRentValidator.Object, getScooterByIdHandler.Object, rentalCostService.Object, Data.CompanyRepository.Object, new Mock<IRentEventUpdateHandler>().Object);
 
-            decimal cost = endRentHandler.Handle(rentedScooter.Id, Mocks.Company.Id, endDate);
+            decimal cost = endRentHandler.Handle(rentedScooter.Id, Data.Company.Id, endDate);
 
             cost.ShouldBe(totalCostForRentalPeriod);
         }
@@ -76,7 +76,7 @@ namespace ScooterRental.UnitTests.Usecases
         private decimal CalculateExpectedRentalCosts()
         {
             decimal cost = 0;
-            foreach (var x in Mocks.RentEvents)
+            foreach (var x in Data.RentEvents)
             {
                 cost += x.TotalPrice;
             }
@@ -86,7 +86,7 @@ namespace ScooterRental.UnitTests.Usecases
         [Fact]
         public void Validator_NotRentedScooter_ThrowsException()
         {
-            var notRentedScooter = ScooterBuilder.Default(Mocks.Company).WithIsRented(false).Build();
+            var notRentedScooter = ScooterBuilder.Default(Data.Company).WithIsRented(false).Build();
             IEndRentValidator validator = new EndRentValidator();
 
             Action act = () => validator.Validate(notRentedScooter);

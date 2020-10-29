@@ -11,10 +11,10 @@ namespace ScooterRental.Core.Usecases
         private readonly ICompanyRepository companyRepository;
         private readonly IStartRentHandler startRentHandler;
         private readonly IEndRentHandler endRentHandler;
-        private readonly ICalculateIncomeHandler calculateIncomeHandler;
+        private readonly IIncomeReportHandler calculateIncomeHandler;
         private readonly IGetRentalCompanyValidator validator;
 
-        public GetRentalCompanyHandler(ICompanyRepository companyRepository, IStartRentHandler startRentHandler, IEndRentHandler endRentHandler, ICalculateIncomeHandler calculateIncomeHandler, IGetRentalCompanyValidator validator)
+        public GetRentalCompanyHandler(ICompanyRepository companyRepository, IStartRentHandler startRentHandler, IEndRentHandler endRentHandler, IIncomeReportHandler calculateIncomeHandler, IGetRentalCompanyValidator validator)
         {
             this.companyRepository = companyRepository;
             this.startRentHandler = startRentHandler;

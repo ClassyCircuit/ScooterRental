@@ -2,11 +2,11 @@
 {
     public abstract class TestBase
     {
-        protected readonly Mocks Mocks;
+        protected readonly Data Data;
 
-        protected TestBase(Mocks mocks)
+        protected TestBase(Data data)
         {
-            Mocks = mocks;
+            Data = data;
         }
     }
 }

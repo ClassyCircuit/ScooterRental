@@ -15,7 +15,7 @@ namespace ScooterRental.UnitTests.Services
         private Context context;
         private CompanyRepository repository;
 
-        public CompanyRepositoryTests(Mocks mocks) : base(mocks)
+        public CompanyRepositoryTests(Data mocks) : base(mocks)
         {
             List<Company> companies = new List<Company>()
             {
@@ -30,23 +30,23 @@ namespace ScooterRental.UnitTests.Services
         public void AddScooter_AddsNewObjectToList()
         {
             // Arrange          
-            int scooterCountBefore = Mocks.Scooters.Count;
+            int scooterCountBefore = Data.Scooters.Count;
 
             string scooterId = GetRandom.UniqueId();
             decimal price = GetRandom.Decimal(0, 10);
 
             // Act
-            repository.AddScooter(Mocks.Company.Id, scooterId, price);
+            repository.AddScooter(Data.Company.Id, scooterId, price);
 
             // Assert
-            Mocks.Scooters.Count.ShouldBe(scooterCountBefore + 1);
+            Data.Scooters.Count.ShouldBe(scooterCountBefore + 1);
         }
 
         [Fact]
         public void GetScooterById_InvalidId_ReturnsNull()
         {
             // Act
-            Scooter result = repository.GetScooterById(Mocks.Company.Id, "");
+            Scooter result = repository.GetScooterById(Data.Company.Id, "");
 
             // Assert
             result.ShouldBeNull();
@@ -56,7 +56,7 @@ namespace ScooterRental.UnitTests.Services
         public void GetScooters_ReturnsListOfScooters()
         {
             // Act
-            IList<Scooter> scooters = repository.GetScooters(Mocks.Company.Id);
+            IList<Scooter> scooters = repository.GetScooters(Data.Company.Id);
 
             // Assert
             scooters.ShouldNotBeEmpty();
@@ -66,20 +66,20 @@ namespace ScooterRental.UnitTests.Services
         public void RemoveScooter_RemovesObjectFromList()
         {
             // Arrange
-            int scooterCountBefore = Mocks.Scooters.Count;
+            int scooterCountBefore = Data.Scooters.Count;
 
             // Act
-            repository.RemoveScooter(Mocks.Company.Id, Mocks.ExistingScooterId);
+            repository.RemoveScooter(Data.Company.Id, Data.ExistingScooterId);
 
             // Assert
-            Mocks.Scooters.Count.ShouldBe(scooterCountBefore - 1);
+            Data.Scooters.Count.ShouldBe(scooterCountBefore - 1);
         }
 
         [Fact]
         public void RemoveScooter_InvalidId_ThrowsException()
         {
             // Arrange
-            Action act = () => repository.RemoveScooter(Mocks.Company.Id, "");
+            Action act = () => repository.RemoveScooter(Data.Company.Id, "");
 
             // Act & Assert
             Should.Throw<InvalidOperationException>(act);
@@ -89,21 +89,21 @@ namespace ScooterRental.UnitTests.Services
         public void UpdateScooter_ExistingScooterValuesChanged()
         {
             // Arrange
-            var scooter = Mocks.Scooters[0];
+            var scooter = Data.Scooters[0];
             scooter.IsRented = false;
 
             var updated = ScooterBuilder
-                .Default(Mocks.Company)
+                .Default(Data.Company)
                 .WithId(scooter.Id)
                 .WithPricePerMinute(scooter.PricePerMinute)
                 .WithIsRented(true)
                 .Build();
 
             // Act
-            repository.UpdateScooter(Mocks.Company.Id, updated);
+            repository.UpdateScooter(Data.Company.Id, updated);
 
             // Assert
-            Mocks.Scooters[0].IsRented.ShouldBe(true);
+            Data.Scooters[0].IsRented.ShouldBe(true);
         }
     }
 }

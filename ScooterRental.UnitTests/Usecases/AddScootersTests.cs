@@ -16,7 +16,7 @@ namespace ScooterRental.UnitTests.Usecases
     {
         private Mock<IAddScooterValidator> AddScooterValidator;
 
-        public AddScootersTests(Setup.Mocks context) : base(context)
+        public AddScootersTests(Setup.Data context) : base(context)
         {
             AddScooterValidator = new Mock<IAddScooterValidator>();
         }
@@ -25,11 +25,11 @@ namespace ScooterRental.UnitTests.Usecases
         public void AddScooterValidator_NotUniqueId_ThrowsException()
         {
             var getScooterByIdHandler = new Mock<IGetScooterByIdHandler>();
-            getScooterByIdHandler.Setup(x => x.Handle(Mocks.ExistingScooterId, Mocks.Company.Id)).Returns(Mocks.Scooters[0]);
+            getScooterByIdHandler.Setup(x => x.Handle(Data.ExistingScooterId, Data.Company.Id)).Returns(Data.Scooters[0]);
 
             AddScooterValidator validator = new AddScooterValidator(getScooterByIdHandler.Object);
 
-            Action act = () => validator.Validate(Mocks.ExistingScooterId, Mocks.Company.Id);
+            Action act = () => validator.Validate(Data.ExistingScooterId, Data.Company.Id);
 
             Should.Throw<IdNotUniqueException>(act);
         }
@@ -47,11 +47,11 @@ namespace ScooterRental.UnitTests.Usecases
         [Fact]
         public void AddScooter_AddsNewScooter()
         {
-            Mocks.CompanyRepository.Setup(x => x.GetScooterById(Mocks.Company.Id, "1")).Returns((Scooter)null);
+            Data.CompanyRepository.Setup(x => x.GetScooterById(Data.Company.Id, "1")).Returns((Scooter)null);
 
-            AddScooterHandler handler = new AddScooterHandler(Mocks.CompanyRepository.Object, AddScooterValidator.Object);
+            AddScooterHandler handler = new AddScooterHandler(Data.CompanyRepository.Object, AddScooterValidator.Object);
 
-            handler.Handle("1", 4m, Mocks.Company.Id);
+            handler.Handle("1", 4m, Data.Company.Id);
         }
     }
 }

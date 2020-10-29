@@ -10,7 +10,7 @@ namespace ScooterRental.UnitTests.Setup
     /// <summary>
     /// Holds re-usable mock objects for setting up unit tests.
     /// </summary>
-    public class Mocks
+    public class Data
     {
         public Company Company { get; }
         public IList<Scooter> Scooters { get; }
@@ -19,7 +19,7 @@ namespace ScooterRental.UnitTests.Setup
         public Mock<GetScooterByIdValidator> GetScooterByIdValidator { get; internal set; }
         public Mock<ICompanyRepository> CompanyRepository { get; internal set; }
 
-        public Mocks()
+        public Data()
         {
             Company = CompanyBuilder.Default().Build();
 

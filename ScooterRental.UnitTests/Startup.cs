@@ -13,7 +13,7 @@ namespace ScooterRental.UnitTests
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<Scooter, Scooter>();
-            services.AddTransient<Mocks, Mocks>();
+            services.AddTransient<Data, Data>();
             services.AddScoped<IList<Scooter>, List<Scooter>>();
         }
     }

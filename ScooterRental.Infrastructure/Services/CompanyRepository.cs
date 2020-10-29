@@ -14,6 +14,8 @@ namespace ScooterRental.Infrastructure.Services
     /// </summary>
     public class CompanyRepository : ICompanyRepository
     {
+        // TODO: Split this repo, it is too large.
+
         Context context;
 
         public CompanyRepository(Context context)
@@ -79,19 +81,51 @@ namespace ScooterRental.Infrastructure.Services
 
         public void UpsertRentEvent(string companyId, RentEvent updatedEvent)
         {
-            var existingEvent = GetRentEventById(companyId, updatedEvent.Id);
+            try
+            {
+                var existingEvent = GetRentEventById(companyId, updatedEvent.Id);
+                existingEvent.StartDate = updatedEvent.StartDate;
+                existingEvent.EndDate = updatedEvent.EndDate;
+                existingEvent.PricePerMinute = updatedEvent.PricePerMinute;
+                existingEvent.IsActive = updatedEvent.IsActive;
+                existingEvent.TotalPrice = updatedEvent.TotalPrice;
 
-            existingEvent.StartDate = updatedEvent.StartDate;
-            existingEvent.EndDate = updatedEvent.EndDate;
-            existingEvent.PricePerMinute = updatedEvent.PricePerMinute;
-            existingEvent.IsActive = updatedEvent.IsActive;
-            existingEvent.TotalPrice = updatedEvent.TotalPrice;
+            }
+            catch (InvalidOperationException)
+            {
+                CreateRentEvent(companyId, updatedEvent);
+            }
+
+
         }
 
         public RentEvent GetActiveRentEventByScooterId(string companyId, string scooterId)
         {
             Company company = GetCompanyById(companyId);
             return company.RentEvents.Single(x => x.ScooterId == scooterId && x.IsActive == true);
+        }
+
+        private IList<RentEvent> GetRentalsByYear(string companyId, int? year, bool activeEvents)
+        {
+            Company company = GetCompanyById(companyId);
+
+            if (year.HasValue)
+            {
+                return company.RentEvents.Where(x => x.StartDate.Year == year && x.IsActive == activeEvents).ToList();
+            }
+
+            return company.RentEvents.Where(x => x.IsActive == false).ToList();
+
+        }
+
+        public IList<RentEvent> GetCompletedRentalsByYear(string companyId, int? year)
+        {
+            return GetRentalsByYear(companyId, year, false);
+        }
+
+        public IList<RentEvent> GetActiveEventsByYear(string companyId, int? year)
+        {
+            return GetRentalsByYear(companyId, year, true);
         }
     }
 }

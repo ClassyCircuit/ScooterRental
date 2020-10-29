@@ -21,6 +21,7 @@ namespace ScooterRental.UnitTests.Builders
             if (rentEvent == null)
             {
                 rentEvent = new RentEvent(StartDate, EndDate, PricePerMinute, IsActive, Id, company, scooterId);
+                rentEvent.TotalPrice = TotalPrice;
             }
 
             return rentEvent;
