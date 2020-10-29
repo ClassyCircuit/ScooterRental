@@ -40,6 +40,12 @@ namespace ScooterRental.Core.Services
             return updatedRentEvents;
         }
 
+        /// <summary>
+        /// Creates a new instance of rent event.
+        /// </summary>
+        /// <param name="rentEvent"></param>
+        /// <param name="currentDayAtMidnight"></param>
+        /// <returns></returns>
         private static RentEvent CreateNewEvent(RentEvent rentEvent, DateTime currentDayAtMidnight)
         {
             return new RentEvent(currentDayAtMidnight,
@@ -51,13 +57,19 @@ namespace ScooterRental.Core.Services
                                 rentEvent.ScooterId);
         }
 
-        // TODO: Refactor, method is too large.
+        /// <summary>
+        /// Update an existing rent event with the total cost and end date.
+        /// Returns the updated event.
+        /// </summary>
+        /// <param name="rentEvent"></param>
+        /// <param name="startDate"></param>
+        /// <param name="endDate"></param>
+        /// <returns></returns>
         private RentEvent UpdateRentEvent(RentEvent rentEvent, DateTime startDate, DateTime endDate)
         {
             // How many mins till cost limit
             int minutesTillCostLimit = (int)Math.Floor(priceLimit.CostLimitPerDay / rentEvent.PricePerMinute);
             DateTime ActualEndDate = endDate;
-            int minutesLeftInDay = GetMinutesLeftInDay(rentEvent);
             TimeSpan timeLeftInDay = GetTimeLeftInDay(startDate);
 
             TimeSpan rentDuration = endDate - startDate;
@@ -69,6 +81,25 @@ namespace ScooterRental.Core.Services
                 ActualEndDate = startDate + timeLeftInDay;
             }
 
+            decimal totalCost = CalculateTotalCost(rentEvent, startDate, minutesTillCostLimit, ref ActualEndDate, rentDuration);
+
+            rentEvent.TotalPrice = totalCost;
+            rentEvent.EndDate = ActualEndDate;
+
+            return rentEvent;
+        }
+
+        /// <summary>
+        /// Calculates total cost for all possible scenarios.
+        /// </summary>
+        /// <param name="rentEvent"></param>
+        /// <param name="startDate"></param>
+        /// <param name="minutesTillCostLimit"></param>
+        /// <param name="ActualEndDate"></param>
+        /// <param name="rentDuration"></param>
+        /// <returns>Total cost</returns>
+        private decimal CalculateTotalCost(RentEvent rentEvent, DateTime startDate, int minutesTillCostLimit, ref DateTime ActualEndDate, TimeSpan rentDuration)
+        {
             decimal totalCost = Math.Round(Convert.ToDecimal(rentDuration.TotalMinutes) * rentEvent.PricePerMinute, 2);
 
             if (totalCost > priceLimit.CostLimitPerDay)
@@ -83,22 +114,17 @@ namespace ScooterRental.Core.Services
                 totalCost = 0m;
             }
 
-            rentEvent.TotalPrice = totalCost;
-            rentEvent.EndDate = ActualEndDate;
-
-            return rentEvent;
+            return totalCost;
         }
 
+        /// <summary>
+        /// Calculates how many minutes are left till midnight.
+        /// </summary>
+        /// <param name="StartDate"></param>
+        /// <returns></returns>
         private TimeSpan GetTimeLeftInDay(DateTime StartDate)
         {
             return StartDate.Date.AddDays(1).AddTicks(-1) - StartDate;
         }
-
-        private static int GetMinutesLeftInDay(RentEvent rentEvent)
-        {
-            DateTime endOfDay = rentEvent.StartDate.Date.AddDays(1);
-            return (int)Math.Floor((endOfDay - rentEvent.StartDate).TotalMinutes);
-        }
-
     }
 }

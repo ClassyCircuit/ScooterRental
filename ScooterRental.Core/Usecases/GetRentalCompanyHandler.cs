@@ -25,9 +25,11 @@ namespace ScooterRental.Core.Usecases
 
         public IRentalCompany Handle(string name)
         {
+            // Validation
             validator.Validate(name);
             var company = companyRepository.GetCompanyByName(name);
 
+            // Attempt to retrieve the company
             if (company == null)
             {
                 throw new EntityDoesNotExistException($"Company with name: {name} does not exist.");

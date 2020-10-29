@@ -26,6 +26,11 @@ namespace ScooterRental.Core.Usecases
             CreateRentEvent(scooter, company);
         }
 
+        /// <summary>
+        /// Create a new rental event when starting a rent.
+        /// </summary>
+        /// <param name="scooter"></param>
+        /// <param name="company"></param>
         private void CreateRentEvent(Scooter scooter, Company company)
         {
             rentEventRepository.CreateRentEvent(company.Id, new RentEvent(
@@ -38,6 +43,11 @@ namespace ScooterRental.Core.Usecases
                 scooterId: scooter.Id));
         }
 
+        /// <summary>
+        /// Mark the scooter as unavailable for renting.
+        /// </summary>
+        /// <param name="scooter"></param>
+        /// <param name="companyId"></param>
         private void SetIsRentedFlag(Scooter scooter, string companyId)
         {
             scooter.IsRented = true;

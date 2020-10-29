@@ -4,7 +4,8 @@ using System.Collections.Generic;
 namespace ScooterRental.Infrastructure.Data
 {
     /// <summary>
-    /// Holds application data.
+    /// Holds application entities. 
+    /// Company is the aggregate root in this case.
     /// </summary>
     public class Context
     {

@@ -17,9 +17,11 @@ namespace ScooterRental.Core.Usecases
 
         public void Handle(string id, decimal pricePerMinute, string companyId)
         {
+            // Validate
             AddScooterValidator.Validate(id, companyId);
             AddScooterValidator.Validate(pricePerMinute);
 
+            // Add new scooter
             scooterRepository.AddScooter(companyId, id, pricePerMinute);
         }
     }

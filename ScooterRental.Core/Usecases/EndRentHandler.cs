@@ -37,19 +37,28 @@ namespace ScooterRental.Core.Usecases
         /// <returns></returns>
         public decimal Handle(string scooterId, string companyId, DateTime endDate)
         {
+            // Find existing scooter
             var scooter = getScooterByIdHandler.Handle(scooterId, companyId);
             validator.Validate(scooter);
 
+            // Calculate rental costs for scooter
             IList<RentEvent> rentEvents = CalculateRentalCostsForScooter(scooterId, companyId, endDate);
             rentEventUpdateHandler.Handle(companyId, rentEvents);
-
             decimal totalCost = rentEvents.GetRentEventTotalCosts();
 
+            // Set scooter as available for renting
             DisableIsRentedOnScooter(companyId, scooter);
 
             return totalCost;
         }
 
+        /// <summary>
+        /// Calculate rental costs for scooter
+        /// </summary>
+        /// <param name="scooterId"></param>
+        /// <param name="companyId"></param>
+        /// <param name="endDate"></param>
+        /// <returns></returns>
         private IList<RentEvent> CalculateRentalCostsForScooter(string scooterId, string companyId, DateTime endDate)
         {
             RentEvent rentEvent = rentEventRepository.GetActiveRentEventByScooterId(companyId, scooterId);
@@ -58,6 +67,11 @@ namespace ScooterRental.Core.Usecases
             return rentEvents;
         }
 
+        /// <summary>
+        /// Set IsRented flag to false.
+        /// </summary>
+        /// <param name="companyId"></param>
+        /// <param name="scooter"></param>
         private void DisableIsRentedOnScooter(string companyId, Scooter scooter)
         {
             scooter.IsRented = false;

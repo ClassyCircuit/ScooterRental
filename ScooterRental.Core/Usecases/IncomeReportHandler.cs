@@ -33,6 +33,14 @@ namespace ScooterRental.Core.Usecases
             return completedRentalCosts;
         }
 
+        /// <summary>
+        /// If active events are requested to be included in the report, then retrieve them and calculate their costs.
+        /// </summary>
+        /// <param name="companyId"></param>
+        /// <param name="year"></param>
+        /// <param name="endDate"></param>
+        /// <param name="priceLimit"></param>
+        /// <returns></returns>
         private decimal GetActiveEventCosts(string companyId, int? year, DateTime endDate, PriceLimit priceLimit)
         {
             IList<RentEvent> activeEvents = repository.GetActiveEventsByYear(companyId, year);
@@ -47,6 +55,12 @@ namespace ScooterRental.Core.Usecases
             return activeEventTotalCosts;
         }
 
+        /// <summary>
+        /// Retrieves all completed rentals and sums up their costs.
+        /// </summary>
+        /// <param name="companyId"></param>
+        /// <param name="year"></param>
+        /// <returns></returns>
         private decimal GetCompletedEventCosts(string companyId, int? year)
         {
             IList<RentEvent> completedRentals = repository.GetCompletedRentalsByYear(companyId, year);
