@@ -1,6 +1,6 @@
 ﻿using ScooterRental.Core.Entities;
 using ScooterRental.Core.Interfaces.Services;
-using ScooterRental.Core.Usecases;
+using ScooterRental.Core.Interfaces.Usecases;
 using System.Collections.Generic;
 
 namespace ScooterRental.Core.Services
@@ -8,12 +8,12 @@ namespace ScooterRental.Core.Services
     public class ScooterService : IScooterService
     {
         private readonly Company company;
-        private readonly AddScooterHandler addScooterHandler;
-        private readonly GetScooterByIdHandler getScooterByIdHandler;
-        private readonly GetScootersHandler getScootersHandler;
-        private readonly RemoveScooterHandler removeScooterHandler;
+        private readonly IAddScooterHandler addScooterHandler;
+        private readonly IGetScooterByIdHandler getScooterByIdHandler;
+        private readonly IGetScootersHandler getScootersHandler;
+        private readonly IRemoveScooterHandler removeScooterHandler;
 
-        public ScooterService(AddScooterHandler addScooterHandler, GetScooterByIdHandler getScooterByIdHandler, GetScootersHandler getScootersHandler, RemoveScooterHandler removeScooterHandler, Company company)
+        public ScooterService(IAddScooterHandler addScooterHandler, IGetScooterByIdHandler getScooterByIdHandler, IGetScootersHandler getScootersHandler, IRemoveScooterHandler removeScooterHandler, Company company)
         {
             this.addScooterHandler = addScooterHandler;
             this.getScooterByIdHandler = getScooterByIdHandler;

@@ -7,6 +7,11 @@ namespace ScooterRental.Core.Interfaces.Usecases
     /// </summary>
     public interface IGetScooterServiceHandler
     {
+        /// <summary>
+        /// Get scooter service by company name.
+        /// </summary>
+        /// <param name="name">company name</param>
+        /// <returns></returns>
         IScooterService Handle(string name);
     }
 }

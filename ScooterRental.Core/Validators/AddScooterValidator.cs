@@ -15,11 +15,19 @@ namespace ScooterRental.Core.Validators
 
         public void Validate(string id, string companyId)
         {
-            var result = getScooterByIdHandler.Handle(id, companyId);
-
-            if (result != null)
+            try
             {
-                throw new IdNotUniqueException("Scooter ID already exists.");
+                var result = getScooterByIdHandler.Handle(id, companyId);
+                if (result != null)
+                {
+                    throw new IdNotUniqueException("Scooter ID already exists.");
+                }
+
+            }
+            catch (EntityDoesNotExistException)
+            {
+                // If entity is not found in this case then it is a successful business scenario.
+                return;
             }
         }
 

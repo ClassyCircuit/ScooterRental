@@ -11,10 +11,19 @@ namespace ScooterRental.Core.Usecases
     public class GetScooterServiceHandler : IGetScooterServiceHandler
     {
         private readonly ICompanyRepository companyRepository;
-        private readonly AddScooterHandler addScooterHandler;
-        private readonly GetScooterByIdHandler getScooterByIdHandler;
-        private readonly GetScootersHandler getScootersHandler;
-        private readonly RemoveScooterHandler removeScooterHandler;
+        private readonly IAddScooterHandler addScooterHandler;
+        private readonly IGetScooterByIdHandler getScooterByIdHandler;
+        private readonly IGetScootersHandler getScootersHandler;
+        private readonly IRemoveScooterHandler removeScooterHandler;
+
+        public GetScooterServiceHandler(ICompanyRepository companyRepository, IAddScooterHandler addScooterHandler, IGetScooterByIdHandler getScooterByIdHandler, IGetScootersHandler getScootersHandler, IRemoveScooterHandler removeScooterHandler)
+        {
+            this.companyRepository = companyRepository;
+            this.addScooterHandler = addScooterHandler;
+            this.getScooterByIdHandler = getScooterByIdHandler;
+            this.getScootersHandler = getScootersHandler;
+            this.removeScooterHandler = removeScooterHandler;
+        }
 
         public IScooterService Handle(string name)
         {

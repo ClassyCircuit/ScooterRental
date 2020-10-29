@@ -25,9 +25,9 @@ namespace ScooterRental.IntegrationTests
             // Usecase handlers
             services.AddScoped<IAddScooterHandler, AddScooterHandler>();
             services.AddScoped<IEndRentHandler, EndRentHandler>();
-            services.AddScoped<IGetRentalCompanyHandler, GetRentalCompanyHandler>();
+            services.AddTransient<IGetRentalCompanyHandler, GetRentalCompanyHandler>();
             services.AddScoped<IGetScooterByIdHandler, GetScooterByIdHandler>();
-            services.AddScoped<IGetScooterServiceHandler, GetScooterServiceHandler>();
+            services.AddTransient<IGetScooterServiceHandler, GetScooterServiceHandler>();
             services.AddScoped<IGetScootersHandler, GetScootersHandler>();
             services.AddScoped<IIncomeReportHandler, IncomeReportHandler>();
             services.AddScoped<IRemoveScooterHandler, RemoveScooterHandler>();
@@ -36,7 +36,7 @@ namespace ScooterRental.IntegrationTests
 
             // Infrastructure
             services.AddSingleton<Context, Context>();
-            services.AddScoped<IList<Company>, List<Company>>();
+            services.AddSingleton<IList<Company>, List<Company>>();
 
             // Validators
             services.AddScoped<IAddScooterValidator, AddScooterValidator>();

@@ -1,5 +1,6 @@
 ﻿using ScooterRental.Core.Entities;
 using ScooterRental.Core.Interfaces.Services;
+using ScooterRental.Core.Services.Builders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,8 @@ namespace ScooterRental.Infrastructure.Services
         public void AddScooter(string companyId, string id, decimal pricePerMinute)
         {
             Company company = companyRepository.GetCompanyById(companyId);
-            company.Scooters.Add(new Scooter(id, pricePerMinute, company));
+            var scooter = ScooterBuilder.Default(company).WithId(id).WithPricePerMinute(pricePerMinute).Build();
+            company.Scooters.Add(scooter);
         }
 
         public Scooter GetScooterById(string companyId, string scooterId)

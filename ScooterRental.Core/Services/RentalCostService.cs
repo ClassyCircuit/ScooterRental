@@ -24,7 +24,7 @@ namespace ScooterRental.Core.Services
             IList<RentEvent> updatedRentEvents = new List<RentEvent>();
             this.priceLimit = priceLimit;
 
-            while (currentDay <= endDate.Date)
+            while (currentDay.Date <= endDate.Date)
             {
                 // For subsequent days new RentEvents are created
                 if (currentDay > rentEvent.StartDate)
@@ -51,7 +51,7 @@ namespace ScooterRental.Core.Services
             return new RentEvent(currentDayAtMidnight,
                                 null,
                                 rentEvent.PricePerMinute,
-                                rentEvent.IsActive,
+                                false,
                                 Guid.NewGuid().ToString(),
                                 rentEvent.Company,
                                 rentEvent.ScooterId);
@@ -85,6 +85,7 @@ namespace ScooterRental.Core.Services
 
             rentEvent.TotalPrice = totalCost;
             rentEvent.EndDate = ActualEndDate;
+            rentEvent.IsActive = false;
 
             return rentEvent;
         }

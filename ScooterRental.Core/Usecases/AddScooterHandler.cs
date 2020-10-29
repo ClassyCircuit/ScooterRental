@@ -7,19 +7,19 @@ namespace ScooterRental.Core.Usecases
     public class AddScooterHandler : IAddScooterHandler
     {
         IScooterRepository scooterRepository;
-        IAddScooterValidator AddScooterValidator;
+        IAddScooterValidator addScooterValidator;
 
-        public AddScooterHandler(IScooterRepository companyRepository, IAddScooterValidator addScooterValidator)
+        public AddScooterHandler(IScooterRepository scooterRepository, IAddScooterValidator addScooterValidator)
         {
-            scooterRepository = companyRepository;
-            AddScooterValidator = addScooterValidator;
+            this.scooterRepository = scooterRepository;
+            this.addScooterValidator = addScooterValidator;
         }
 
         public void Handle(string id, decimal pricePerMinute, string companyId)
         {
             // Validate
-            AddScooterValidator.Validate(id, companyId);
-            AddScooterValidator.Validate(pricePerMinute);
+            addScooterValidator.Validate(id, companyId);
+            addScooterValidator.Validate(pricePerMinute);
 
             // Add new scooter
             scooterRepository.AddScooter(companyId, id, pricePerMinute);

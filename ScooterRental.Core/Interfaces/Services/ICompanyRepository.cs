@@ -9,5 +9,6 @@ namespace ScooterRental.Core.Interfaces.Services
     {
         Company GetCompanyById(string companyId);
         Company GetCompanyByName(string name);
+        void AddCompany(Company company);
     }
 }

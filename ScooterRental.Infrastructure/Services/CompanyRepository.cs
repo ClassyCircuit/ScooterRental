@@ -29,5 +29,10 @@ namespace ScooterRental.Infrastructure.Services
         {
             return context.Company.Single(x => x.Id == companyId);
         }
+
+        public void AddCompany(Company company)
+        {
+            context.Company.Add(company);
+        }
     }
 }
