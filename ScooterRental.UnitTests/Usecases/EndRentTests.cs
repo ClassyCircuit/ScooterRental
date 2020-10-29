@@ -20,6 +20,8 @@ namespace ScooterRental.UnitTests.Usecases
         private Mock<IRentalCostService> rentalCostService;
         private Mock<IRentEventUpdateHandler> rentEventUpdateHandler;
         private EndRentHandler endRentHandler;
+        private Mock<IScooterRepository> ScooterRepository;
+        private Mock<IRentEventRepository> RentEventRepository;
 
         public EndRentTests(Setup.Data context) : base(context)
         {
@@ -27,6 +29,8 @@ namespace ScooterRental.UnitTests.Usecases
             getScooterByIdHandler = new Mock<IGetScooterByIdHandler>();
             rentalCostService = new Mock<IRentalCostService>();
             rentEventUpdateHandler = new Mock<IRentEventUpdateHandler>();
+            ScooterRepository = new Mock<IScooterRepository>();
+            RentEventRepository = new Mock<IRentEventRepository>();
         }
 
         [Fact]
@@ -39,10 +43,10 @@ namespace ScooterRental.UnitTests.Usecases
             endRentValidator.Setup(x => x.Validate(Data.Scooters[0])).Verifiable();
             getScooterByIdHandler.Setup(x => x.Handle(Data.ExistingScooterId, Data.Company.Id)).Returns(Data.Scooters[0]).Verifiable();
             rentalCostService.Setup(x => x.Calculate(Data.RentEvents[0], endDate)).Returns(Data.RentEvents).Verifiable();
-            Data.CompanyRepository.Setup(x => x.GetActiveRentEventByScooterId(Data.Company.Id, Data.Scooters[0].Id)).Returns(Data.RentEvents[0]);
+            RentEventRepository.Setup(x => x.GetActiveRentEventByScooterId(Data.Company.Id, Data.Scooters[0].Id)).Returns(Data.RentEvents[0]);
             rentEventUpdateHandler.Setup(x => x.Handle(Data.Company.Id, Data.RentEvents)).Verifiable();
 
-            endRentHandler = new EndRentHandler(endRentValidator.Object, getScooterByIdHandler.Object, rentalCostService.Object, Data.CompanyRepository.Object, rentEventUpdateHandler.Object);
+            endRentHandler = new EndRentHandler(endRentValidator.Object, getScooterByIdHandler.Object, rentalCostService.Object, RentEventRepository.Object, rentEventUpdateHandler.Object, ScooterRepository.Object);
 
             // Act
             endRentHandler.Handle(Data.Scooters[0].Id, Data.Company.Id, endDate);
@@ -64,9 +68,9 @@ namespace ScooterRental.UnitTests.Usecases
 
             getScooterByIdHandler.Setup(x => x.Handle(rentedScooter.Id, Data.Company.Id)).Returns(rentedScooter);
             rentalCostService.Setup(x => x.Calculate(rentEvent, endDate)).Returns(Data.RentEvents);
-            Data.CompanyRepository.Setup(x => x.GetActiveRentEventByScooterId(Data.Company.Id, rentedScooter.Id)).Returns(rentEvent);
+            RentEventRepository.Setup(x => x.GetActiveRentEventByScooterId(Data.Company.Id, rentedScooter.Id)).Returns(rentEvent);
 
-            endRentHandler = new EndRentHandler(endRentValidator.Object, getScooterByIdHandler.Object, rentalCostService.Object, Data.CompanyRepository.Object, new Mock<IRentEventUpdateHandler>().Object);
+            endRentHandler = new EndRentHandler(endRentValidator.Object, getScooterByIdHandler.Object, rentalCostService.Object, RentEventRepository.Object, rentEventUpdateHandler.Object, ScooterRepository.Object);
 
             decimal cost = endRentHandler.Handle(rentedScooter.Id, Data.Company.Id, endDate);
 

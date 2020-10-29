@@ -1,7 +1,4 @@
-﻿using Moq;
-using ScooterRental.Core.Entities;
-using ScooterRental.Core.Interfaces.Services;
-using ScooterRental.Core.Validators;
+﻿using ScooterRental.Core.Entities;
 using ScooterRental.UnitTests.Builders;
 using System.Collections.Generic;
 
@@ -16,8 +13,6 @@ namespace ScooterRental.UnitTests.Setup
         public IList<Scooter> Scooters { get; }
         public IList<RentEvent> RentEvents { get; }
         public string ExistingScooterId { get; }
-        public Mock<GetScooterByIdValidator> GetScooterByIdValidator { get; internal set; }
-        public Mock<ICompanyRepository> CompanyRepository { get; internal set; }
 
         public Data()
         {
@@ -43,13 +38,6 @@ namespace ScooterRental.UnitTests.Setup
             Company.Scooters = Scooters;
 
             ExistingScooterId = Scooters[0].Id;
-
-            GetScooterByIdValidator = new Mock<GetScooterByIdValidator>();
-
-            CompanyRepository = new Mock<ICompanyRepository>();
-            CompanyRepository.Setup(x => x.GetScooters(Company.Id)).Returns(Scooters);
-            CompanyRepository.Setup(x => x.GetScooterById(Company.Id, ExistingScooterId)).Returns(Scooters[0]);
-            CompanyRepository.Setup(x => x.GetCompanyByName(Company.Name)).Returns(Company);
         }
     }
 }

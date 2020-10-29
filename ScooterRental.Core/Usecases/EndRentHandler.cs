@@ -16,16 +16,18 @@ namespace ScooterRental.Core.Usecases
         private readonly IEndRentValidator validator;
         private readonly IGetScooterByIdHandler getScooterByIdHandler;
         private readonly IRentalCostService rentalCostService;
-        private readonly ICompanyRepository companyRepository;
+        private readonly IRentEventRepository rentEventRepository;
+        private readonly IScooterRepository scooterRepository;
         private readonly IRentEventUpdateHandler rentEventUpdateHandler;
 
-        public EndRentHandler(IEndRentValidator endRentHandlerValidator, IGetScooterByIdHandler getScooterByIdHandler, IRentalCostService rentalCostService, ICompanyRepository companyRepository, IRentEventUpdateHandler rentEventUpdateHandler)
+        public EndRentHandler(IEndRentValidator endRentHandlerValidator, IGetScooterByIdHandler getScooterByIdHandler, IRentalCostService rentalCostService, IRentEventRepository rentEventRepository, IRentEventUpdateHandler rentEventUpdateHandler, IScooterRepository scooterRepository)
         {
             validator = endRentHandlerValidator;
             this.getScooterByIdHandler = getScooterByIdHandler;
             this.rentalCostService = rentalCostService;
-            this.companyRepository = companyRepository;
+            this.rentEventRepository = rentEventRepository;
             this.rentEventUpdateHandler = rentEventUpdateHandler;
+            this.scooterRepository = scooterRepository;
         }
 
         /// <summary>
@@ -51,7 +53,7 @@ namespace ScooterRental.Core.Usecases
 
         private IList<RentEvent> CalculateRentalCostsForScooter(string scooterId, string companyId, DateTime endDate)
         {
-            RentEvent rentEvent = companyRepository.GetActiveRentEventByScooterId(companyId, scooterId);
+            RentEvent rentEvent = rentEventRepository.GetActiveRentEventByScooterId(companyId, scooterId);
             IList<RentEvent> rentEvents = rentalCostService.Calculate(rentEvent, endDate);
             return rentEvents;
         }
@@ -59,7 +61,7 @@ namespace ScooterRental.Core.Usecases
         private void DisableIsRentedOnScooter(string companyId, Scooter scooter)
         {
             scooter.IsRented = false;
-            companyRepository.UpdateScooter(companyId, scooter);
+            scooterRepository.UpdateScooter(companyId, scooter);
         }
 
     }

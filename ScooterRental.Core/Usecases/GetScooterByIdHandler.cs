@@ -8,12 +8,12 @@ namespace ScooterRental.Core.Usecases
 {
     public class GetScooterByIdHandler : IGetScooterByIdHandler
     {
-        ICompanyRepository companyRepository;
+        IScooterRepository scooterRepository;
         IGetScooterByIdValidator validator;
 
-        public GetScooterByIdHandler(ICompanyRepository companyRepository, IGetScooterByIdValidator getScooterByIdValidator)
+        public GetScooterByIdHandler(IScooterRepository scooterRepository, IGetScooterByIdValidator getScooterByIdValidator)
         {
-            this.companyRepository = companyRepository;
+            this.scooterRepository = scooterRepository;
             validator = getScooterByIdValidator;
         }
 
@@ -21,7 +21,7 @@ namespace ScooterRental.Core.Usecases
         {
             validator.Validate(id);
 
-            Scooter scooter = companyRepository.GetScooterById(companyId, id);
+            Scooter scooter = scooterRepository.GetScooterById(companyId, id);
 
             if (scooter == null)
             {

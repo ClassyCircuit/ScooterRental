@@ -8,13 +8,13 @@ namespace ScooterRental.Core.Usecases
 {
     public class RemoveScooterHandler : IRemoveScooterHandler
     {
-        private readonly ICompanyRepository companyRepository;
+        private readonly IScooterRepository scooterRepository;
         private readonly IRemoveScooterValidator validator;
 
 
-        public RemoveScooterHandler(ICompanyRepository companyRepository, IRemoveScooterValidator validator)
+        public RemoveScooterHandler(IScooterRepository scooterRepository, IRemoveScooterValidator validator)
         {
-            this.companyRepository = companyRepository;
+            this.scooterRepository = scooterRepository;
             this.validator = validator;
         }
 
@@ -23,7 +23,7 @@ namespace ScooterRental.Core.Usecases
             validator.Validate(id, companyId);
             try
             {
-                companyRepository.RemoveScooter(companyId, id);
+                scooterRepository.RemoveScooter(companyId, id);
             }
             catch (InvalidOperationException)
             {

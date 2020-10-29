@@ -18,23 +18,27 @@ namespace ScooterRental.UnitTests.Usecases
         Mock<IEndRentHandler> IEndRentHandler;
         Mock<IIncomeReportHandler> ICalculateIncomeHandler;
         Mock<IGetRentalCompanyValidator> IGetRentalCompanyValidator;
+        Mock<ICompanyRepository> CompanyRepository;
 
         GetRentalCompanyHandler GetRentalCompanyHandler;
 
 
         public GetRentalCompanyTests(Setup.Data mocks) : base(mocks)
         {
+            CompanyRepository = new Mock<ICompanyRepository>();
             IStartRentHandler = new Mock<IStartRentHandler>();
             IEndRentHandler = new Mock<IEndRentHandler>();
             ICalculateIncomeHandler = new Mock<IIncomeReportHandler>();
             IGetRentalCompanyValidator = new Mock<IGetRentalCompanyValidator>();
 
-            GetRentalCompanyHandler = new GetRentalCompanyHandler(Data.CompanyRepository.Object, IStartRentHandler.Object, IEndRentHandler.Object, ICalculateIncomeHandler.Object, IGetRentalCompanyValidator.Object);
+            GetRentalCompanyHandler = new GetRentalCompanyHandler(CompanyRepository.Object, IStartRentHandler.Object, IEndRentHandler.Object, ICalculateIncomeHandler.Object, IGetRentalCompanyValidator.Object);
         }
 
         [Fact]
         public void Handle_ValidCompanyName_ReturnsRentalCompany()
         {
+            CompanyRepository.Setup(x => x.GetCompanyByName(Data.Company.Name)).Returns(Data.Company);
+
             IRentalCompany rentalCompany = GetRentalCompanyHandler.Handle(Data.Company.Name);
 
             rentalCompany.Name.ShouldBe(Data.Company.Name);

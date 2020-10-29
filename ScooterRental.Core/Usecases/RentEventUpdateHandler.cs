@@ -7,18 +7,18 @@ namespace ScooterRental.Core.Usecases
 {
     public class RentEventUpdateHandler : IRentEventUpdateHandler
     {
-        private readonly ICompanyRepository companyRepository;
+        private readonly IRentEventRepository rentEventRepository;
 
-        public RentEventUpdateHandler(ICompanyRepository companyRepository)
+        public RentEventUpdateHandler(IRentEventRepository rentEventRepository)
         {
-            this.companyRepository = companyRepository;
+            this.rentEventRepository = rentEventRepository;
         }
 
         public void Handle(string companyId, IList<RentEvent> rentEvents)
         {
             foreach (var rentEvent in rentEvents)
             {
-                companyRepository.UpsertRentEvent(companyId, rentEvent);
+                rentEventRepository.UpsertRentEvent(companyId, rentEvent);
             }
         }
     }

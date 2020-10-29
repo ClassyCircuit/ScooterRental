@@ -1,5 +1,6 @@
 ﻿using Moq;
 using ScooterRental.Core.Exceptions;
+using ScooterRental.Core.Interfaces.Services;
 using ScooterRental.Core.Interfaces.Usecases;
 using ScooterRental.Core.Interfaces.Validators;
 using ScooterRental.Core.Usecases;
@@ -15,10 +16,12 @@ namespace ScooterRental.UnitTests.Usecases
     public class RemoveScooterTests : TestBase
     {
         public Mock<RemoveScooterValidator> RemoveScooterValidator;
+        private Mock<IScooterRepository> ScooterRepository;
 
-        public RemoveScooterTests(Setup.Data context) : base(context)
+        public RemoveScooterTests(Data context) : base(context)
         {
             RemoveScooterValidator = new Mock<RemoveScooterValidator>();
+            ScooterRepository = new Mock<IScooterRepository>();
         }
 
         [Fact]
@@ -47,7 +50,7 @@ namespace ScooterRental.UnitTests.Usecases
             var validator = new Mock<IRemoveScooterValidator>();
             validator.Setup(x => x.Validate(id, Data.Company.Id)).Verifiable();
 
-            RemoveScooterHandler handler = new RemoveScooterHandler(Data.CompanyRepository.Object, validator.Object);
+            RemoveScooterHandler handler = new RemoveScooterHandler(ScooterRepository.Object, validator.Object);
 
             handler.Handle(id, Data.Company.Id);
 

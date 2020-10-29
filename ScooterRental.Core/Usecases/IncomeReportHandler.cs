@@ -9,10 +9,10 @@ namespace ScooterRental.Core.Usecases
 {
     public class IncomeReportHandler : IIncomeReportHandler
     {
-        private readonly ICompanyRepository repository;
+        private readonly IRentEventRepository repository;
         private readonly IRentalCostService rentalCostService;
 
-        public IncomeReportHandler(ICompanyRepository repository, IRentalCostService rentalCostService)
+        public IncomeReportHandler(IRentEventRepository repository, IRentalCostService rentalCostService)
         {
             this.repository = repository;
             this.rentalCostService = rentalCostService;

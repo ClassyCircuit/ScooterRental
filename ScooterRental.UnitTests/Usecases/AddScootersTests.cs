@@ -1,6 +1,7 @@
 ﻿using Moq;
 using ScooterRental.Core.Entities;
 using ScooterRental.Core.Exceptions;
+using ScooterRental.Core.Interfaces.Services;
 using ScooterRental.Core.Interfaces.Usecases;
 using ScooterRental.Core.Interfaces.Validators;
 using ScooterRental.Core.Usecases;
@@ -15,10 +16,12 @@ namespace ScooterRental.UnitTests.Usecases
     public class AddScootersTests : TestBase
     {
         private Mock<IAddScooterValidator> AddScooterValidator;
+        private Mock<IScooterRepository> ScooterRepository;
 
         public AddScootersTests(Setup.Data context) : base(context)
         {
             AddScooterValidator = new Mock<IAddScooterValidator>();
+            ScooterRepository = new Mock<IScooterRepository>();
         }
 
         [Fact]
@@ -47,9 +50,9 @@ namespace ScooterRental.UnitTests.Usecases
         [Fact]
         public void AddScooter_AddsNewScooter()
         {
-            Data.CompanyRepository.Setup(x => x.GetScooterById(Data.Company.Id, "1")).Returns((Scooter)null);
+            ScooterRepository.Setup(x => x.GetScooterById(Data.Company.Id, "1")).Returns((Scooter)null);
 
-            AddScooterHandler handler = new AddScooterHandler(Data.CompanyRepository.Object, AddScooterValidator.Object);
+            AddScooterHandler handler = new AddScooterHandler(ScooterRepository.Object, AddScooterValidator.Object);
 
             handler.Handle("1", 4m, Data.Company.Id);
         }

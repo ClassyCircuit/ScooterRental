@@ -1,5 +1,5 @@
 ﻿namespace ScooterRental.Core.Entities
-{ // TODO: external file for scooter types (price,id) or factory
+{
     public class Scooter
     {
         /// <summary>

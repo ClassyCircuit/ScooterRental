@@ -6,12 +6,12 @@ namespace ScooterRental.Core.Usecases
 {
     public class AddScooterHandler : IAddScooterHandler
     {
-        ICompanyRepository CompanyRepository;
+        IScooterRepository scooterRepository;
         IAddScooterValidator AddScooterValidator;
 
-        public AddScooterHandler(ICompanyRepository companyRepository, IAddScooterValidator addScooterValidator)
+        public AddScooterHandler(IScooterRepository companyRepository, IAddScooterValidator addScooterValidator)
         {
-            CompanyRepository = companyRepository;
+            scooterRepository = companyRepository;
             AddScooterValidator = addScooterValidator;
         }
 
@@ -20,7 +20,7 @@ namespace ScooterRental.Core.Usecases
             AddScooterValidator.Validate(id, companyId);
             AddScooterValidator.Validate(pricePerMinute);
 
-            CompanyRepository.AddScooter(companyId, id, pricePerMinute);
+            scooterRepository.AddScooter(companyId, id, pricePerMinute);
         }
     }
 }

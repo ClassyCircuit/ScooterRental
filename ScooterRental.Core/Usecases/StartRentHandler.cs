@@ -8,13 +8,15 @@ namespace ScooterRental.Core.Usecases
 {
     public class StartRentHandler : IStartRentHandler
     {
-        readonly IStartRentValidator validator;
-        readonly ICompanyRepository companyRepository;
+        private readonly IStartRentValidator validator;
+        private readonly IRentEventRepository rentEventRepository;
+        private readonly IScooterRepository scooterRepository;
 
-        public StartRentHandler(IStartRentValidator validator, ICompanyRepository companyRepository)
+        public StartRentHandler(IStartRentValidator validator, IRentEventRepository rentEventRepository, IScooterRepository scooterRepository)
         {
             this.validator = validator;
-            this.companyRepository = companyRepository;
+            this.rentEventRepository = rentEventRepository;
+            this.scooterRepository = scooterRepository;
         }
 
         public void Handle(string id, Company company)
@@ -26,7 +28,7 @@ namespace ScooterRental.Core.Usecases
 
         private void CreateRentEvent(Scooter scooter, Company company)
         {
-            companyRepository.CreateRentEvent(company.Id, new RentEvent(
+            rentEventRepository.CreateRentEvent(company.Id, new RentEvent(
                 id: Guid.NewGuid().ToString(),
                 startDate: DateTime.UtcNow,
                 endDate: null,
@@ -39,7 +41,7 @@ namespace ScooterRental.Core.Usecases
         private void SetIsRentedFlag(Scooter scooter, string companyId)
         {
             scooter.IsRented = true;
-            companyRepository.UpdateScooter(companyId, scooter);
+            scooterRepository.UpdateScooter(companyId, scooter);
         }
     }
 }

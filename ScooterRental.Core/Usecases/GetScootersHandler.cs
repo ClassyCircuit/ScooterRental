@@ -7,16 +7,16 @@ namespace ScooterRental.Core.Usecases
 {
     public class GetScootersHandler : IGetScootersHandler
     {
-        ICompanyRepository companyRepository;
+        IScooterRepository scooterRepository;
 
-        public GetScootersHandler(ICompanyRepository companyRepository)
+        public GetScootersHandler(IScooterRepository scooterRepository)
         {
-            this.companyRepository = companyRepository;
+            this.scooterRepository = scooterRepository;
         }
 
         public IList<Scooter> Handle(string companyId)
         {
-            IList<Scooter> scooters = companyRepository.GetScooters(companyId);
+            IList<Scooter> scooters = scooterRepository.GetScooters(companyId);
 
             return scooters;
         }
