@@ -20,17 +20,21 @@ namespace ScooterRental.UnitTests.Usecases
         private Mock<IRentalCostService> rentalCostService;
         private Mock<IRentEventUpdateHandler> rentEventUpdateHandler;
         private EndRentHandler endRentHandler;
-        private Mock<IScooterRepository> ScooterRepository;
-        private Mock<IRentEventRepository> RentEventRepository;
+        private Mock<IScooterRepository> scooterRepository;
+        private Mock<IRentEventRepository> rentEventRepository;
+        private Mock<IBusinessLogicRepository> businessLogicRepository;
 
-        public EndRentTests(Setup.Data context) : base(context)
+        public EndRentTests(Data context) : base(context)
         {
             endRentValidator = new Mock<IEndRentValidator>();
             getScooterByIdHandler = new Mock<IGetScooterByIdHandler>();
             rentalCostService = new Mock<IRentalCostService>();
             rentEventUpdateHandler = new Mock<IRentEventUpdateHandler>();
-            ScooterRepository = new Mock<IScooterRepository>();
-            RentEventRepository = new Mock<IRentEventRepository>();
+            scooterRepository = new Mock<IScooterRepository>();
+            rentEventRepository = new Mock<IRentEventRepository>();
+            businessLogicRepository = new Mock<IBusinessLogicRepository>();
+
+            businessLogicRepository.Setup(x => x.GetPriceLimits(Data.Company.Id)).Returns(Data.PriceLimit);
         }
 
         [Fact]
@@ -42,11 +46,11 @@ namespace ScooterRental.UnitTests.Usecases
 
             endRentValidator.Setup(x => x.Validate(Data.Scooters[0])).Verifiable();
             getScooterByIdHandler.Setup(x => x.Handle(Data.ExistingScooterId, Data.Company.Id)).Returns(Data.Scooters[0]).Verifiable();
-            rentalCostService.Setup(x => x.Calculate(Data.RentEvents[0], endDate)).Returns(Data.RentEvents).Verifiable();
-            RentEventRepository.Setup(x => x.GetActiveRentEventByScooterId(Data.Company.Id, Data.Scooters[0].Id)).Returns(Data.RentEvents[0]);
+            rentalCostService.Setup(x => x.Calculate(Data.RentEvents[0], endDate, Data.PriceLimit)).Returns(Data.RentEvents).Verifiable();
+            rentEventRepository.Setup(x => x.GetActiveRentEventByScooterId(Data.Company.Id, Data.Scooters[0].Id)).Returns(Data.RentEvents[0]);
             rentEventUpdateHandler.Setup(x => x.Handle(Data.Company.Id, Data.RentEvents)).Verifiable();
 
-            endRentHandler = new EndRentHandler(endRentValidator.Object, getScooterByIdHandler.Object, rentalCostService.Object, RentEventRepository.Object, rentEventUpdateHandler.Object, ScooterRepository.Object);
+            endRentHandler = new EndRentHandler(endRentValidator.Object, getScooterByIdHandler.Object, rentalCostService.Object, rentEventRepository.Object, rentEventUpdateHandler.Object, scooterRepository.Object, businessLogicRepository.Object);
 
             // Act
             endRentHandler.Handle(Data.Scooters[0].Id, Data.Company.Id, endDate);
@@ -67,10 +71,10 @@ namespace ScooterRental.UnitTests.Usecases
             decimal totalCostForRentalPeriod = CalculateExpectedRentalCosts();
 
             getScooterByIdHandler.Setup(x => x.Handle(rentedScooter.Id, Data.Company.Id)).Returns(rentedScooter);
-            rentalCostService.Setup(x => x.Calculate(rentEvent, endDate)).Returns(Data.RentEvents);
-            RentEventRepository.Setup(x => x.GetActiveRentEventByScooterId(Data.Company.Id, rentedScooter.Id)).Returns(rentEvent);
+            rentalCostService.Setup(x => x.Calculate(rentEvent, endDate, Data.PriceLimit)).Returns(Data.RentEvents);
+            rentEventRepository.Setup(x => x.GetActiveRentEventByScooterId(Data.Company.Id, rentedScooter.Id)).Returns(rentEvent);
 
-            endRentHandler = new EndRentHandler(endRentValidator.Object, getScooterByIdHandler.Object, rentalCostService.Object, RentEventRepository.Object, rentEventUpdateHandler.Object, ScooterRepository.Object);
+            endRentHandler = new EndRentHandler(endRentValidator.Object, getScooterByIdHandler.Object, rentalCostService.Object, rentEventRepository.Object, rentEventUpdateHandler.Object, scooterRepository.Object, businessLogicRepository.Object);
 
             decimal cost = endRentHandler.Handle(rentedScooter.Id, Data.Company.Id, endDate);
 

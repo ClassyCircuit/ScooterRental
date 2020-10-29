@@ -6,7 +6,7 @@ using ScooterRental.Core.Services;
 
 namespace ScooterRental.Core.Usecases
 {
-    public class GetRentalCompanyHandler
+    public class GetRentalCompanyHandler : IGetRentalCompanyHandler
     {
         private readonly ICompanyRepository companyRepository;
         private readonly IStartRentHandler startRentHandler;

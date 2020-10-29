@@ -6,6 +6,6 @@ namespace ScooterRental.Core.Interfaces.Services
 {
     public interface IRentalCostService
     {
-        IList<RentEvent> Calculate(RentEvent rentEvent, DateTime EndDate);
+        IList<RentEvent> Calculate(RentEvent rentEvent, DateTime endDate, PriceLimit priceLimit);
     }
 }

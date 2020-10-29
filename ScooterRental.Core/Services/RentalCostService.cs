@@ -10,12 +10,7 @@ namespace ScooterRental.Core.Services
         /// <summary>
         /// Maximum money that is allowed to be charged for a rental per day.
         /// </summary>
-        public decimal CostLimitPerDay { get; }
-
-        public RentalCostService(decimal costLimitPerDay)
-        {
-            CostLimitPerDay = costLimitPerDay;
-        }
+        private PriceLimit priceLimit;
 
         /// <summary>
         /// Calculates total cost for a rent event.
@@ -23,10 +18,11 @@ namespace ScooterRental.Core.Services
         /// </summary>
         /// <param name="rentEvent">Rent event for which to calculate costs</param>
         /// <returns></returns>
-        public IList<RentEvent> Calculate(RentEvent rentEvent, DateTime endDate)
+        public IList<RentEvent> Calculate(RentEvent rentEvent, DateTime endDate, PriceLimit priceLimit)
         {
             DateTime currentDay = rentEvent.StartDate;
             IList<RentEvent> updatedRentEvents = new List<RentEvent>();
+            this.priceLimit = priceLimit;
 
             while (currentDay <= endDate.Date)
             {
@@ -55,10 +51,11 @@ namespace ScooterRental.Core.Services
                                 rentEvent.ScooterId);
         }
 
+        // TODO: Refactor, method is too large.
         private RentEvent UpdateRentEvent(RentEvent rentEvent, DateTime startDate, DateTime endDate)
         {
             // How many mins till cost limit
-            int minutesTillCostLimit = (int)Math.Floor(CostLimitPerDay / rentEvent.PricePerMinute);
+            int minutesTillCostLimit = (int)Math.Floor(priceLimit.CostLimitPerDay / rentEvent.PricePerMinute);
             DateTime ActualEndDate = endDate;
             int minutesLeftInDay = GetMinutesLeftInDay(rentEvent);
             TimeSpan timeLeftInDay = GetTimeLeftInDay(startDate);
@@ -74,9 +71,9 @@ namespace ScooterRental.Core.Services
 
             decimal totalCost = Math.Round(Convert.ToDecimal(rentDuration.TotalMinutes) * rentEvent.PricePerMinute, 2);
 
-            if (totalCost > CostLimitPerDay)
+            if (totalCost > priceLimit.CostLimitPerDay)
             {
-                totalCost = CostLimitPerDay;
+                totalCost = priceLimit.CostLimitPerDay;
                 ActualEndDate = startDate.AddMinutes(minutesTillCostLimit);
             }
 

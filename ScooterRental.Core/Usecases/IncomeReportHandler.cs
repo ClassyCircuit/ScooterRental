@@ -11,33 +11,36 @@ namespace ScooterRental.Core.Usecases
     {
         private readonly IRentEventRepository repository;
         private readonly IRentalCostService rentalCostService;
+        private IBusinessLogicRepository businessLogicRepository;
 
-        public IncomeReportHandler(IRentEventRepository repository, IRentalCostService rentalCostService)
+        public IncomeReportHandler(IRentEventRepository repository, IRentalCostService rentalCostService, IBusinessLogicRepository businessLogicRepository)
         {
             this.repository = repository;
             this.rentalCostService = rentalCostService;
+            this.businessLogicRepository = businessLogicRepository;
         }
 
         public decimal Handle(int? year, bool includeNotCompletedRentals, string companyId, DateTime endDate)
         {
             decimal completedRentalCosts = GetCompletedEventCosts(companyId, year);
+            PriceLimit priceLimit = businessLogicRepository.GetPriceLimits(companyId);
 
             if (includeNotCompletedRentals)
             {
-                completedRentalCosts += GetActiveEventCosts(companyId, year, endDate);
+                completedRentalCosts += GetActiveEventCosts(companyId, year, endDate, priceLimit);
             }
 
             return completedRentalCosts;
         }
 
-        private decimal GetActiveEventCosts(string companyId, int? year, DateTime endDate)
+        private decimal GetActiveEventCosts(string companyId, int? year, DateTime endDate, PriceLimit priceLimit)
         {
             IList<RentEvent> activeEvents = repository.GetActiveEventsByYear(companyId, year);
             decimal activeEventTotalCosts = 0m;
 
             foreach (var activeEvent in activeEvents)
             {
-                IList<RentEvent> result = rentalCostService.Calculate(activeEvent, endDate);
+                IList<RentEvent> result = rentalCostService.Calculate(activeEvent, endDate, priceLimit);
                 activeEventTotalCosts += result.GetRentEventTotalCosts();
             }
 

@@ -10,17 +10,15 @@ namespace ScooterRental.Core.Usecases
 {
     public class EndRentHandler : IEndRentHandler
     {
-        public delegate void RentEndedHandler();
-        public static event RentEndedHandler OnRentEnd;
-
         private readonly IEndRentValidator validator;
         private readonly IGetScooterByIdHandler getScooterByIdHandler;
         private readonly IRentalCostService rentalCostService;
         private readonly IRentEventRepository rentEventRepository;
         private readonly IScooterRepository scooterRepository;
         private readonly IRentEventUpdateHandler rentEventUpdateHandler;
+        private readonly IBusinessLogicRepository businessLogicRepository;
 
-        public EndRentHandler(IEndRentValidator endRentHandlerValidator, IGetScooterByIdHandler getScooterByIdHandler, IRentalCostService rentalCostService, IRentEventRepository rentEventRepository, IRentEventUpdateHandler rentEventUpdateHandler, IScooterRepository scooterRepository)
+        public EndRentHandler(IEndRentValidator endRentHandlerValidator, IGetScooterByIdHandler getScooterByIdHandler, IRentalCostService rentalCostService, IRentEventRepository rentEventRepository, IRentEventUpdateHandler rentEventUpdateHandler, IScooterRepository scooterRepository, IBusinessLogicRepository businessLogicRepository)
         {
             validator = endRentHandlerValidator;
             this.getScooterByIdHandler = getScooterByIdHandler;
@@ -28,6 +26,7 @@ namespace ScooterRental.Core.Usecases
             this.rentEventRepository = rentEventRepository;
             this.rentEventUpdateHandler = rentEventUpdateHandler;
             this.scooterRepository = scooterRepository;
+            this.businessLogicRepository = businessLogicRepository;
         }
 
         /// <summary>
@@ -54,7 +53,8 @@ namespace ScooterRental.Core.Usecases
         private IList<RentEvent> CalculateRentalCostsForScooter(string scooterId, string companyId, DateTime endDate)
         {
             RentEvent rentEvent = rentEventRepository.GetActiveRentEventByScooterId(companyId, scooterId);
-            IList<RentEvent> rentEvents = rentalCostService.Calculate(rentEvent, endDate);
+            var priceLimit = businessLogicRepository.GetPriceLimits(companyId);
+            IList<RentEvent> rentEvents = rentalCostService.Calculate(rentEvent, endDate, priceLimit);
             return rentEvents;
         }
 

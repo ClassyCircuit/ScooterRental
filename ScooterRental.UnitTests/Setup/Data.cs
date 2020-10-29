@@ -13,6 +13,7 @@ namespace ScooterRental.UnitTests.Setup
         public IList<Scooter> Scooters { get; }
         public IList<RentEvent> RentEvents { get; }
         public string ExistingScooterId { get; }
+        public PriceLimit PriceLimit { get; internal set; }
 
         public Data()
         {
@@ -38,6 +39,11 @@ namespace ScooterRental.UnitTests.Setup
             Company.Scooters = Scooters;
 
             ExistingScooterId = Scooters[0].Id;
+
+            PriceLimit = new PriceLimit()
+            {
+                CostLimitPerDay = 20m
+            };
         }
     }
 }

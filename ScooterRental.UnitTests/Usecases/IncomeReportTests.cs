@@ -13,16 +13,16 @@ namespace ScooterRental.UnitTests.Usecases
 {
     public class IncomeReportTests : TestBase
     {
-        Mock<IRentalCostService> rentalCostService;
-        IList<RentEvent> completedEvents;
-        IList<RentEvent> activeEvents;
-        IList<RentEvent> calculatedActiveEvents;
-        DateTime startDateYesterday = DateTime.Today.Date.AddMinutes(-10);
-        DateTime startDateOneYearAgo = DateTime.Today.Date.AddYears(-1);
-        DateTime endDate = DateTime.Today.Date.AddMinutes(5);
-        decimal price = 1.5m;
-        Mock<IRentEventRepository> RentEventRepository;
-
+        private Mock<IRentalCostService> rentalCostService;
+        private IList<RentEvent> completedEvents;
+        private IList<RentEvent> activeEvents;
+        private IList<RentEvent> calculatedActiveEvents;
+        private DateTime startDateYesterday = DateTime.Today.Date.AddMinutes(-10);
+        private DateTime startDateOneYearAgo = DateTime.Today.Date.AddYears(-1);
+        private DateTime endDate = DateTime.Today.Date.AddMinutes(5);
+        private decimal price = 1.5m;
+        private Mock<IRentEventRepository> RentEventRepository;
+        private Mock<IBusinessLogicRepository> businessLogicRepository;
 
         public IncomeReportTests(Data data) : base(data)
         {
@@ -48,14 +48,15 @@ namespace ScooterRental.UnitTests.Usecases
             };
 
             RentEventRepository = new Mock<IRentEventRepository>();
-
+            businessLogicRepository = new Mock<IBusinessLogicRepository>();
+            businessLogicRepository.Setup(x => x.GetPriceLimits(Data.Company.Id)).Returns(Data.PriceLimit);
         }
 
         [Fact]
         public void Handler_CompletedRents_ReturnsCostOfCompletedEvents()
         {
             RentEventRepository.Setup(x => x.GetCompletedRentalsByYear(Data.Company.Id, null)).Returns(completedEvents);
-            IncomeReportHandler handler = new IncomeReportHandler(RentEventRepository.Object, rentalCostService.Object);
+            IncomeReportHandler handler = new IncomeReportHandler(RentEventRepository.Object, rentalCostService.Object, businessLogicRepository.Object);
 
             decimal result = handler.Handle(null, false, Data.Company.Id, startDateYesterday);
 
@@ -70,11 +71,11 @@ namespace ScooterRental.UnitTests.Usecases
 
             foreach (var activeEvent in activeEvents)
             {
-                rentalCostService.Setup(x => x.Calculate(activeEvent, endDate)).Returns(calculatedActiveEvents);
+                rentalCostService.Setup(x => x.Calculate(activeEvent, endDate, Data.PriceLimit)).Returns(calculatedActiveEvents);
 
             }
 
-            IncomeReportHandler handler = new IncomeReportHandler(RentEventRepository.Object, rentalCostService.Object);
+            IncomeReportHandler handler = new IncomeReportHandler(RentEventRepository.Object, rentalCostService.Object, businessLogicRepository.Object);
 
             decimal result = handler.Handle(null, true, Data.Company.Id, endDate);
 
@@ -94,7 +95,7 @@ namespace ScooterRental.UnitTests.Usecases
             };
 
             RentEventRepository.Setup(x => x.GetCompletedRentalsByYear(Data.Company.Id, year)).Returns(eventsYearAgo);
-            IncomeReportHandler handler = new IncomeReportHandler(RentEventRepository.Object, rentalCostService.Object);
+            IncomeReportHandler handler = new IncomeReportHandler(RentEventRepository.Object, rentalCostService.Object, businessLogicRepository.Object);
 
             decimal result = handler.Handle(year, false, Data.Company.Id, startDateYesterday);
 

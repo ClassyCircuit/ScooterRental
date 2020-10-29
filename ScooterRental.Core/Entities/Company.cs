@@ -23,5 +23,10 @@ namespace ScooterRental.Core.Entities
         public IList<RentEvent> RentEvents { get; set; }
 
         public decimal TotalIncome { get; set; }
+
+        /// <summary>
+        /// Maximum allowed charge per day.
+        /// </summary>
+        public PriceLimit PriceLimit { get; set; }
     }
 }

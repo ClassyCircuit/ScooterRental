@@ -40,7 +40,7 @@ namespace ScooterRental.UnitTests.Services
 
             rentEvent = RentEventBuilder.Default(Data.Company, scooter).WithStartDate(startDate).WithPricePerMinute(pricePerMinute).Build();
 
-            service = new RentalCostService(costLimitPerDay);
+            service = new RentalCostService();
         }
 
         private static void VerifyEventFields(decimal totalCost, DateTime endDate, RentEvent updatedEvent)
@@ -60,7 +60,7 @@ namespace ScooterRental.UnitTests.Services
             Setup(2m, startDate: DateTime.Today, endDate: DateTime.Today.AddMinutes(5));
             expectedCost = rentEvent.PricePerMinute * Convert.ToDecimal((endDate - startDate).TotalMinutes);
 
-            IList<RentEvent> updatedEvents = service.Calculate(rentEvent, endDate);
+            IList<RentEvent> updatedEvents = service.Calculate(rentEvent, endDate, Data.PriceLimit);
             updatedEvents.Count.ShouldBe(1);
             updatedEvents[0].TotalPrice.ShouldBe(expectedCost);
             updatedEvents[0].EndDate.ShouldBe(endDate);
@@ -72,7 +72,7 @@ namespace ScooterRental.UnitTests.Services
             Setup(2m, startDate: DateTime.Today, endDate: DateTime.Today.AddSeconds(59));
             expectedCost = 0m;
 
-            IList<RentEvent> updatedEvents = service.Calculate(rentEvent, endDate);
+            IList<RentEvent> updatedEvents = service.Calculate(rentEvent, endDate, Data.PriceLimit);
             updatedEvents.Count.ShouldBe(1);
             updatedEvents[0].TotalPrice.ShouldBe(expectedCost);
             updatedEvents[0].EndDate.ShouldBe(endDate);
@@ -86,7 +86,7 @@ namespace ScooterRental.UnitTests.Services
             int minutesTillCostLimit = (int)Math.Floor(costLimitPerDay / rentEvent.PricePerMinute);
             DateTime actualEndDate = rentEvent.StartDate.AddMinutes(minutesTillCostLimit);
 
-            IList<RentEvent> updatedEvents = service.Calculate(rentEvent, endDate);
+            IList<RentEvent> updatedEvents = service.Calculate(rentEvent, endDate, Data.PriceLimit);
             updatedEvents.Count.ShouldBe(1);
             updatedEvents[0].TotalPrice.ShouldBe(expectedCost);
             updatedEvents[0].EndDate.ShouldBe(actualEndDate);
@@ -228,7 +228,7 @@ namespace ScooterRental.UnitTests.Services
 
         private void TestTwoEvents(decimal firstDayCost, DateTime firstDayEndDate, decimal secondDayCost, DateTime secondDayEndDate)
         {
-            IList<RentEvent> updatedEvents = service.Calculate(rentEvent, endDate);
+            IList<RentEvent> updatedEvents = service.Calculate(rentEvent, endDate, Data.PriceLimit);
 
             VerifyEventCount(updatedEvents, 2);
             VerifyEventFields(firstDayCost, firstDayEndDate, updatedEvents[0]);
@@ -250,7 +250,7 @@ namespace ScooterRental.UnitTests.Services
             decimal thirdDayCost = 10m;
             DateTime thirdDayEndDate = endDate;
 
-            IList<RentEvent> updatedEvents = service.Calculate(rentEvent, endDate);
+            IList<RentEvent> updatedEvents = service.Calculate(rentEvent, endDate, Data.PriceLimit);
 
             VerifyEventCount(updatedEvents, 3);
             VerifyEventFields(firstDayCost, firstDayEndDate, updatedEvents[0]);

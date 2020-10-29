@@ -1,15 +1,17 @@
-﻿using ScooterRental.Core.Interfaces.Services;
+﻿using ScooterRental.Core.Interfaces.Usecases;
 using Xunit;
 
 namespace ScooterRental.IntegrationTests
 {
     public class ScooterServiceTests
     {
-        private readonly IScooterService scooterService;
+        private readonly IGetScooterServiceHandler scooterServiceHandler;
+        private readonly IGetRentalCompanyHandler rentalCompanyHandler;
 
-        public ScooterServiceTests(IScooterService scooterService)
+        public ScooterServiceTests(IGetScooterServiceHandler scooterServiceHandler, IGetRentalCompanyHandler rentalCompanyHandler)
         {
-            this.scooterService = scooterService;
+            this.scooterServiceHandler = scooterServiceHandler;
+            this.rentalCompanyHandler = rentalCompanyHandler;
         }
 
         [Fact]
